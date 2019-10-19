@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CameraControls : MonoBehaviour
 {
+    public Vector2 panLimit;
     private const string cameraTag = "MainCamera";
     public float cameraMoveSpeed = 0.3f;
     private float panDetect = 15.0f;
@@ -27,6 +28,8 @@ public class CameraControls : MonoBehaviour
     {
         moveInput.x = Input.GetAxisRaw("Horizontal");
 		moveInput.y = Input.GetAxisRaw("Vertical");
+
+        
     }
 
     void FixedUpdate()
@@ -59,28 +62,29 @@ public class CameraControls : MonoBehaviour
 
         //Mouse movement
         if(mouseX > 0 && mouseX < panDetect)
-        {
-            Debug.Log("Going left");
+        {            
             posX -= cameraMoveSpeed;
         }
         else if(mouseX < Screen.width && mouseX > (Screen.width - panDetect))
-        {
-            Debug.Log("Going right");
+        {           
             posX += cameraMoveSpeed;
         }
         else if(mouseY > 0 && mouseY < panDetect)
-        {
-            Debug.Log("Going down");
+        {           
             posY -= cameraMoveSpeed;
         }
         else if(mouseY < Screen.height && mouseY > (Screen.height - panDetect))
         {
-            Debug.Log("Going up");
             posY += cameraMoveSpeed;
         }
 
+        posX = Mathf.Clamp(posX, -panLimit.x, panLimit.x);
+        posY = Mathf.Clamp(posY, -panLimit.y, panLimit.y);
+
         Vector3 newPos = new Vector3(posX, posY, -10f);
         Camera.main.transform.position = newPos;
+
+        
     }
 
     void RotateCamera()

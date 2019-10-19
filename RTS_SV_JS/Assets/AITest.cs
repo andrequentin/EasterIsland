@@ -3,14 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
+//For instantianting units, the spawner will have an array with all the scriptable object types and will 
+//assignate the Unit attribute of this class with the corresponding unit type
 public class AITest : MonoBehaviour
 {
+    public Unit unitInfo;
+
+    [SerializeField]
+    private Material highlightedMaterial;
+    [SerializeField]
+    private Material defaultMaterial;
     private const string RESSOURCE_TAG = "Ressource";
     private Rigidbody2D rb2d;
     public Transform target;
-    public float speed = 200f;
+    
     public float nextWaypointDistance = 3f;
 
+    
     public Transform gfx;
     private Path path;
     private int currentWaypoint;
@@ -20,8 +29,10 @@ public class AITest : MonoBehaviour
     public bool canMove = true;
     private bool atDestination = false;
 
-    public float consumeCD = 5f;
+    
     public float consumeCounter = 0f;
+
+    private bool isSelected = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +44,7 @@ public class AITest : MonoBehaviour
 
     void UpdatePath()
     {
-        if(seeker.IsDone())
+        if(seeker.IsDone() && target != null)
             seeker.StartPath(rb2d.position, target.position, OnPathComplete);
     }
 
@@ -61,9 +72,9 @@ public class AITest : MonoBehaviour
     {
         consumeCounter += Time.deltaTime;
 
-        if(consumeCounter >= consumeCD)
+        if(consumeCounter >= unitInfo.gatherSpeed)
         {
-            target.SendMessage("Consume",5);
+            target.SendMessage("Consume",unitInfo.gatherTick);
             consumeCounter = 0f;
         }
     }
@@ -86,7 +97,7 @@ public class AITest : MonoBehaviour
         }
 
         Vector2 direction = ((Vector2) path.vectorPath[currentWaypoint] - rb2d.position).normalized;
-        Vector2 force = direction * speed * Time.deltaTime;
+        Vector2 force = direction * unitInfo.speed * Time.deltaTime;
         
         rb2d.AddForce(force);
 
@@ -100,6 +111,7 @@ public class AITest : MonoBehaviour
 
     void UpdateGFX()
     {
+        //Flip updating
         if(rb2d.velocity.x >= 0.01f)
         {
             gfx.localScale = new Vector3(-1f, 1f, 1f);
@@ -107,6 +119,16 @@ public class AITest : MonoBehaviour
         else if(rb2d.velocity.x <= -0.01f)
         {
             gfx.localScale = new Vector3(1f,1f,1f);
+        }
+
+        //Selection updating
+        if(isSelected)
+        {
+            gfx.GetComponent<SpriteRenderer>().material = highlightedMaterial;
+        }
+        else 
+        {
+            gfx.GetComponent<SpriteRenderer>().material = defaultMaterial;
         }
     }
 
@@ -124,5 +146,10 @@ public class AITest : MonoBehaviour
     public void SetTarget(Transform t)
     {
         this.target = t;
+    }
+
+    public void ToggleSelected()
+    {
+        isSelected = !isSelected;
     }
 }
