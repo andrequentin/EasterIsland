@@ -5,17 +5,24 @@ using Pathfinding;
 
 //For instantianting units, the spawner will have an array with all the scriptable object types and will 
 //assignate the Unit attribute of this class with the corresponding unit type
+
+//TODO is capacity is full -> go to droppoint
 public class AITest : MonoBehaviour
 {
     public Unit unitInfo;
+
+    //0 is for wood, 1 is for animal, 2 is for vegetal
+    private int[] ressourcesQuantity = new int[3];
 
     [SerializeField]
     private Material highlightedMaterial;
     [SerializeField]
     private Material defaultMaterial;
     private const string RESSOURCE_TAG = "Ressource";
+    private const string DROPPOINT_TAG = "DropPoint";
     private Rigidbody2D rb2d;
     public Transform target;
+    public Transform oldTarget;
     
     public float nextWaypointDistance = 3f;
 
@@ -56,12 +63,17 @@ public class AITest : MonoBehaviour
             ComputeMovement();
         }
         
+        //DO STUFF DEPENDING ON TYPE
         if(atDestination)
-        {
-            //DO STUFF DEPENDING ON TYPE
+        {   
             if(target != null && target.gameObject.tag == RESSOURCE_TAG)
             {
                 ConsumeRessource(target);
+            }
+
+            else if(target != null && target.gameObject.tag == DROPPOINT_TAG)
+            {
+                DropRessources(target);
             }
         }
         
@@ -75,7 +87,36 @@ public class AITest : MonoBehaviour
         if(consumeCounter >= unitInfo.gatherSpeed)
         {
             target.SendMessage("Consume",unitInfo.gatherTick);
+            RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
+
+            switch(rt)
+            {
+                case RessourceTypes.WOOD:
+                    this.ressourcesQuantity[0] += unitInfo.gatherTick;
+                    break;
+                case RessourceTypes.ANIMAL:
+                    this.ressourcesQuantity[1] += unitInfo.gatherTick;
+                    break;
+                case RessourceTypes.VEGETAL:
+                    this.ressourcesQuantity[2] += unitInfo.gatherTick;
+                    break;
+                default:
+                    break;
+            }
+
             consumeCounter = 0f;
+        }
+    }
+
+    void DropRessources(Transform target)
+    {
+        int totalCarry = ressourcesQuantity[0] + ressourcesQuantity[1] + ressourcesQuantity[2];
+        if(!target.GetComponent<DropPoint>().IsFull() && (target.GetComponent<DropPoint>().GetTotalCapacity() + totalCarry) < target.GetComponent<DropPoint>().GetMaxCapacity())
+        {
+            target.SendMessage("SetRessource", this.ressourcesQuantity);
+            ressourcesQuantity[0] = 0;
+            ressourcesQuantity[1] = 0;
+            ressourcesQuantity[2] = 0;
         }
     }
 
@@ -145,7 +186,17 @@ public class AITest : MonoBehaviour
 
     public void SetTarget(Transform t)
     {
+        this.oldTarget = this.target;
         this.target = t;
+
+        if(this.target != this.oldTarget)
+        {
+            Debug.Log("test");
+            atDestination = false;
+            canMove = true;
+        }
+
+        InvokeRepeating("UpdatePath",0f,0.5f);
     }
 
     public void ToggleSelected()

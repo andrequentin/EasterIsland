@@ -7,6 +7,7 @@ public class InputManager : MonoBehaviour
     private const string SELECTABLE_TAG = "Selectable";
     private const string RESSOURCE_TAG = "Ressource";
     private const string GROUND_TAG = "Ground";
+    private const string DROPPOINT_TAG = "DropPoint";
 
     public GameObject selectedObject;
     
@@ -53,7 +54,7 @@ public class InputManager : MonoBehaviour
         Vector2 origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(origin, -Vector2.up);
 
-        if(hit.collider != null && hit.transform.tag == RESSOURCE_TAG)
+        if(hit.collider != null && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == DROPPOINT_TAG))
         {
             selectedObject.SendMessage("SetTarget", hit.transform);
         }
