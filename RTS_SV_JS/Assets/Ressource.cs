@@ -2,9 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum RessourceTypes
+    {
+        WOOD,
+        ANIMAL,
+        VEGETAL
+    }
+
+
 public class Ressource : MonoBehaviour
 {
-
+    
+    public RessourceTypes ressourceType;
     public int maxYield;
     public int currentYield;
     // Start is called before the first frame update
@@ -30,6 +40,11 @@ public class Ressource : MonoBehaviour
         return this.currentYield;
     }
 
+    public RessourceTypes GetRessourceType()
+    {
+        return this.ressourceType;
+    }
+
     private void CheckYield()
     {
         if(currentYield <= 0)
@@ -37,4 +52,6 @@ public class Ressource : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
+    
 }

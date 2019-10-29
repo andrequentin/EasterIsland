@@ -5,18 +5,30 @@ using Pathfinding;
 
 //For instantianting units, the spawner will have an array with all the scriptable object types and will 
 //assignate the Unit attribute of this class with the corresponding unit type
+
+//TODO is capacity is full -> go to droppoint
 public class AITest : MonoBehaviour
 {
     public Unit unitInfo;
+
+    //0 is for wood, 1 is for animal, 2 is for vegetal
+    private int[] ressourcesQuantity = new int[3];
 
     [SerializeField]
     private Material highlightedMaterial;
     [SerializeField]
     private Material defaultMaterial;
     private const string RESSOURCE_TAG = "Ressource";
+    private const string DROPPOINT_TAG = "DropPoint";
+
+    private const string POSITION_TAG = "Position";
     private Rigidbody2D rb2d;
     public Transform target;
+    public Transform oldTarget;
+    public Vector2 destination;
+    public Vector2 oldDestination;
     
+    private Vector2 nullVector { get { return new Vector2(-9999, -9999); } }
     public float nextWaypointDistance = 3f;
 
     
@@ -38,33 +50,51 @@ public class AITest : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         seeker = GetComponent<Seeker>();
+        destination = nullVector;
+        oldDestination = nullVector;
         InvokeRepeating("UpdatePath",0f,0.5f);
         
     }
 
     void UpdatePath()
-    {
+    {   
         if(seeker.IsDone() && target != null)
             seeker.StartPath(rb2d.position, target.position, OnPathComplete);
+
+        else if((seeker.IsDone() &&  destination != nullVector))
+        {
+            seeker.StartPath(rb2d.position, destination, OnPathComplete);
+            
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(canMove && target != null)
+        
+        if(canMove && (target != null || destination != nullVector))
         {
             ComputeMovement();
         }
         
+        //DO STUFF DEPENDING ON TYPE
         if(atDestination)
-        {
-            //DO STUFF DEPENDING ON TYPE
+        {   
             if(target != null && target.gameObject.tag == RESSOURCE_TAG)
             {
                 ConsumeRessource(target);
             }
+
+            else if(target != null && target.gameObject.tag == DROPPOINT_TAG)
+            {
+                DropRessources(target);
+            }
+            else if(destination != nullVector)
+            { 
+                destination = nullVector;   
+            }
         }
-        
+        //Debug.Log(seeker.GetCurrentPath());
         UpdateGFX();
     }
 
@@ -75,7 +105,36 @@ public class AITest : MonoBehaviour
         if(consumeCounter >= unitInfo.gatherSpeed)
         {
             target.SendMessage("Consume",unitInfo.gatherTick);
+            RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
+
+            switch(rt)
+            {
+                case RessourceTypes.WOOD:
+                    this.ressourcesQuantity[0] += unitInfo.gatherTick;
+                    break;
+                case RessourceTypes.ANIMAL:
+                    this.ressourcesQuantity[1] += unitInfo.gatherTick;
+                    break;
+                case RessourceTypes.VEGETAL:
+                    this.ressourcesQuantity[2] += unitInfo.gatherTick;
+                    break;
+                default:
+                    break;
+            }
+
             consumeCounter = 0f;
+        }
+    }
+
+    void DropRessources(Transform target)
+    {
+        int totalCarry = ressourcesQuantity[0] + ressourcesQuantity[1] + ressourcesQuantity[2];
+        if(!target.GetComponent<DropPoint>().IsFull() && (target.GetComponent<DropPoint>().GetTotalCapacity() + totalCarry) < target.GetComponent<DropPoint>().GetMaxCapacity())
+        {
+            target.SendMessage("SetRessource", this.ressourcesQuantity);
+            ressourcesQuantity[0] = 0;
+            ressourcesQuantity[1] = 0;
+            ressourcesQuantity[2] = 0;
         }
     }
 
@@ -145,8 +204,53 @@ public class AITest : MonoBehaviour
 
     public void SetTarget(Transform t)
     {
+        //Cancel path if existing
+        if(seeker.GetCurrentPath() != null)
+        {
+            seeker.CancelCurrentPathRequest();
+        }
+
+        destination = nullVector;
+        oldDestination = nullVector;    
+
+        this.oldTarget = this.target;
         this.target = t;
+
+        if(this.target != this.oldTarget)
+        {
+            //Debug.Log("test");
+            atDestination = false;
+            canMove = true;
+        }
+
+        InvokeRepeating("UpdatePath",0f,0.5f);
     }
+
+    public void SetDestination(Vector2 dest)
+    {
+        //Cancel path if existing
+        if(seeker.GetCurrentPath() != null)
+        {
+            seeker.CancelCurrentPathRequest();
+        }
+
+        if(target != null)
+            target = null;
+        if(oldTarget != null)
+            oldTarget = null; 
+
+        this.oldDestination = this.destination;
+        this.destination = dest;  
+
+        if(this.destination != this.oldDestination)
+        {
+            atDestination = false;
+            canMove = true;
+        }
+
+        InvokeRepeating("UpdatePath",0f,0.5f);
+    }
+   
 
     public void ToggleSelected()
     {

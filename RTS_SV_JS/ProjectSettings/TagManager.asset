@@ -7,6 +7,8 @@ TagManager:
   - Ressource
   - Selectable
   - Ground
+  - DropPoint
+  - Position
   layers:
   - Default
   - TransparentFX
@@ -17,7 +19,7 @@ TagManager:
   - 
   - 
   - Obstacle
-  - 
+  - Minimap
   - 
   - 
   - 
