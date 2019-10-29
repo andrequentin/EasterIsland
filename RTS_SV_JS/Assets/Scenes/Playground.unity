@@ -1087,7 +1087,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxYield: 100
-  currentYield: 0
+  currentYield: 100
 --- !u!1 &1978940618
 GameObject:
   m_ObjectHideFlags: 0

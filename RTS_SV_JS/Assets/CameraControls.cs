@@ -50,8 +50,8 @@ public class CameraControls : MonoBehaviour
 
     void MoveCamera()
     {
-        float posX = Camera.main.transform.position.x;
-        float posY = Camera.main.transform.position.y;
+        float posX = Camera.main.transform.localPosition.x;
+        float posY = Camera.main.transform.localPosition.y;
        
         float mouseX = Input.mousePosition.x;
         float mouseY = Input.mousePosition.y;
@@ -59,18 +59,18 @@ public class CameraControls : MonoBehaviour
         //Keyboard movement
         posX += moveInput.x * cameraMoveSpeed;
         posY += moveInput.y * cameraMoveSpeed;
-
         //Mouse movement
-        if(mouseX > 0 && mouseX < panDetect)
-        {            
+        if (mouseX > 0 && mouseX < panDetect)
+        {
             posX -= cameraMoveSpeed;
+
         }
         else if(mouseX < Screen.width && mouseX > (Screen.width - panDetect))
-        {           
+        {
             posX += cameraMoveSpeed;
         }
         else if(mouseY > 0 && mouseY < panDetect)
-        {           
+        {
             posY -= cameraMoveSpeed;
         }
         else if(mouseY < Screen.height && mouseY > (Screen.height - panDetect))
@@ -81,8 +81,9 @@ public class CameraControls : MonoBehaviour
         posX = Mathf.Clamp(posX, -panLimit.x, panLimit.x);
         posY = Mathf.Clamp(posY, -panLimit.y, panLimit.y);
 
-        Vector3 newPos = new Vector3(posX, posY, -10f);
-        Camera.main.transform.position = newPos;
+        Vector3 np = new Vector3(posX, posY, -10f);
+        
+        Camera.main.transform.localPosition = np;
 
         
     }
