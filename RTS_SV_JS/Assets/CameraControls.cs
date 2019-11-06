@@ -50,41 +50,39 @@ public class CameraControls : MonoBehaviour
 
     void MoveCamera()
     {
-        float posX = Camera.main.transform.position.x;
-        float posY = Camera.main.transform.position.y;
-       
-        float mouseX = Input.mousePosition.x;
-        float mouseY = Input.mousePosition.y;
+        float posX = Input.mousePosition.x;
+        float posY = Input.mousePosition.y;
+
+        float mouseX = Input.GetAxis("Horizontal");
+        float mouseY = Input.GetAxis("Vertical");
 
         //Keyboard movement
         posX += moveInput.x * cameraMoveSpeed;
         posY += moveInput.y * cameraMoveSpeed;
 
         //Mouse movement
-        if(mouseX > 0 && mouseX < panDetect)
-        {            
-            posX -= cameraMoveSpeed;
-        }
-        else if(mouseX < Screen.width && mouseX > (Screen.width - panDetect))
-        {           
-            posX += cameraMoveSpeed;
-        }
-        else if(mouseY > 0 && mouseY < panDetect)
-        {           
-            posY -= cameraMoveSpeed;
-        }
-        else if(mouseY < Screen.height && mouseY > (Screen.height - panDetect))
+        if (posX > 0 && posX < panDetect)
         {
-            posY += cameraMoveSpeed;
+            mouseX -= cameraMoveSpeed;
+        }
+        else if (posX < Screen.width && posX > (Screen.width - panDetect))
+        {           
+            mouseX += cameraMoveSpeed;
+        }
+        else if (posY > 0 && posY < panDetect)
+        {
+            mouseY -= cameraMoveSpeed;
+        }
+        else if (posY < Screen.height && posY > (Screen.height - panDetect))
+        {
+            mouseY += cameraMoveSpeed;
         }
 
-        posX = Mathf.Clamp(posX, -panLimit.x, panLimit.x);
-        posY = Mathf.Clamp(posY, -panLimit.y, panLimit.y);
+        Vector3 np = new Vector3(mouseX, mouseY, 0);
 
-        Vector3 newPos = new Vector3(posX, posY, -10f);
-        Camera.main.transform.position = newPos;
+        Camera.main.transform.Translate(np);
 
-        
+
     }
 
     void RotateCamera()
