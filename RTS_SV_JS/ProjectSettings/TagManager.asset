@@ -9,6 +9,8 @@ TagManager:
   - Ground
   - DropPoint
   - Position
+  - Enemy
+  - EnemyDropPoint
   layers:
   - Default
   - TransparentFX

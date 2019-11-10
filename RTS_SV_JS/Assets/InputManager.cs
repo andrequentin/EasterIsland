@@ -8,6 +8,7 @@ public class InputManager : MonoBehaviour
     private const string RESSOURCE_TAG = "Ressource";
     private const string GROUND_TAG = "Ground";
     private const string DROPPOINT_TAG = "DropPoint";
+    private const string ENEMY_TAG = "Enemy";
 
     public GameObject selectedObject;
     public List<GameObject> selectedObjects;
@@ -30,6 +31,11 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.I))
+        {
+            ToggleInfoPanel();
+        }
+
         if(Input.GetMouseButtonDown(0))
         {
             LeftClick();
@@ -112,7 +118,7 @@ public class InputManager : MonoBehaviour
         Vector2 origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(origin, -Vector2.up);
         Debug.Log(hit.collider.gameObject);
-        if(hit.collider != null && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == DROPPOINT_TAG))
+        if(hit.collider != null && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == DROPPOINT_TAG || hit.transform.tag == ENEMY_TAG))
         {
             //selectedObject.SendMessage("SetTarget", hit.transform);
             foreach(GameObject u in selectedObjects)
@@ -131,6 +137,17 @@ public class InputManager : MonoBehaviour
         }
 
        
+    }
+
+    void ToggleInfoPanel()
+    {
+        if(selectedObjects.Capacity > 0)
+        {
+            foreach(GameObject u in selectedObjects)
+            {
+                u.SendMessage("ToggleInfoPanel");
+            }
+        }
     }
 
     void OnGUI()

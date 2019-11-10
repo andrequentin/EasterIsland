@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d8cee9259b79247911731ba689b7e8, type: 3}
   m_Name: NormalUnit
   m_EditorClassIdentifier: 
-  gatherSpeed: 5
+  unitType: 0
+  health: 20
+  gatherSpeed: 0.2
+  attackSpeed: 2
   gatherTick: 1
   capacity: 20
   damage: 1

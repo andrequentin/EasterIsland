@@ -7,10 +7,26 @@ using Pathfinding;
 //assignate the Unit attribute of this class with the corresponding unit type
 
 //TODO is capacity is full -> go to droppoint
+
+    public enum UnitTypes
+    {
+        NORMAL,
+        WARRIOR,
+        GATHERER,
+        LUMBERJACK
+    }
 public class AITest : MonoBehaviour
 {
+    //STATS
     public Unit unitInfo;
+    private int health;
+    private int currentCapacity;
+    private bool isFull = false;
 
+
+
+
+    //OTHER STUFF
     //0 is for wood, 1 is for animal, 2 is for vegetal
     private int[] ressourcesQuantity = new int[3];
 
@@ -18,10 +34,12 @@ public class AITest : MonoBehaviour
     private Material highlightedMaterial;
     [SerializeField]
     private Material defaultMaterial;
+
     private const string RESSOURCE_TAG = "Ressource";
     private const string DROPPOINT_TAG = "DropPoint";
-
+    private const string ENEMY_TAG = "Enemy";
     private const string POSITION_TAG = "Position";
+
     private Rigidbody2D rb2d;
     public Transform target;
     public Transform oldTarget;
@@ -33,6 +51,11 @@ public class AITest : MonoBehaviour
 
     
     public Transform gfx;
+
+    [SerializeField]
+    private GameObject infoPanel;
+    private bool infoPanelActive = false;
+
     private Path path;
     private int currentWaypoint;
     private bool reachedEndOfPath = false;
@@ -43,6 +66,7 @@ public class AITest : MonoBehaviour
 
     
     public float consumeCounter = 0f;
+    public float attackCounter = 0f;
 
     private bool isSelected = false;
     // Start is called before the first frame update
@@ -53,6 +77,7 @@ public class AITest : MonoBehaviour
         destination = nullVector;
         oldDestination = nullVector;
         InvokeRepeating("UpdatePath",0f,0.5f);
+        this.health = unitInfo.health;
         
     }
 
@@ -68,6 +93,11 @@ public class AITest : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        CapacityCheck();
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -80,7 +110,7 @@ public class AITest : MonoBehaviour
         //DO STUFF DEPENDING ON TYPE
         if(atDestination)
         {   
-            if(target != null && target.gameObject.tag == RESSOURCE_TAG)
+            if(target != null && target.gameObject.tag == RESSOURCE_TAG && !isFull)
             {
                 ConsumeRessource(target);
             }
@@ -88,6 +118,10 @@ public class AITest : MonoBehaviour
             else if(target != null && target.gameObject.tag == DROPPOINT_TAG)
             {
                 DropRessources(target);
+            }
+            else if(target != null && target.gameObject.tag == ENEMY_TAG)
+            {
+                AttackTarget(target);
             }
             else if(destination != nullVector)
             { 
@@ -135,6 +169,17 @@ public class AITest : MonoBehaviour
             ressourcesQuantity[0] = 0;
             ressourcesQuantity[1] = 0;
             ressourcesQuantity[2] = 0;
+        }
+    }
+
+    void AttackTarget(Transform target)
+    {
+        attackCounter += Time.deltaTime;
+
+        if(attackCounter >= unitInfo.attackSpeed)
+        {
+            target.SendMessage("TakeDamage", unitInfo.damage);
+            attackCounter = 0f;
         }
     }
 
@@ -255,5 +300,49 @@ public class AITest : MonoBehaviour
     public void ToggleSelected()
     {
         isSelected = !isSelected;
+    }
+
+    public Unit GetUnitInfo()
+    {
+        return this.unitInfo;
+    }
+
+    public int GetWood()
+    {
+        return this.ressourcesQuantity[0];
+    }
+
+    public int GetAnimal()
+    {
+        return this.ressourcesQuantity[1];
+    }
+
+    public int GetVegetal()
+    {
+        return this.ressourcesQuantity[2];
+    }
+
+    public int GetHealth()
+    {
+        return this.health;
+    }
+
+    public void ToggleInfoPanel()
+    {
+        infoPanelActive = !infoPanelActive;
+        this.infoPanel.SetActive(infoPanelActive);
+    }
+
+    private void CapacityCheck()
+    {
+        currentCapacity = this.ressourcesQuantity[0] + this.ressourcesQuantity[1] + this.ressourcesQuantity[2];
+        if(currentCapacity >= this.unitInfo.capacity)
+        {
+            isFull = true;
+        }
+        else
+        {
+            isFull = false;
+        }
     }
 }
