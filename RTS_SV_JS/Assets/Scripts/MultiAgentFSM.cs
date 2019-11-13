@@ -221,7 +221,8 @@ public class MultiAgentFSM : MonoBehaviour
 
             else if (unitInfo.unitType == UnitTypes.NORMAL)
             {
-                SetTarget(GetNearestRessourcePoint(RessourceTypes.WOOD));
+                if(scarceRessources[0])
+                    SetTarget(GetNearestRessourcePoint(RessourceTypes.WOOD));
                 /*int temp = Random.Range(0, scarceRessources.Length);
                 bool tempBool = scarceRessources[temp];
                 while(!tempBool)
@@ -324,6 +325,7 @@ public class MultiAgentFSM : MonoBehaviour
     private void StockState()
     {
         DropRessources(target);
+        currentState = States.IDLE;
     }
 
     private void FightState()

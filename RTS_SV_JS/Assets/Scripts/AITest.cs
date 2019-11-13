@@ -22,6 +22,7 @@ public class AITest : MonoBehaviour
     private int health;
     private int currentCapacity;
     private bool isFull = false;
+    public float range = 1.5f;
 
 
 
@@ -66,7 +67,7 @@ public class AITest : MonoBehaviour
 
     
     public float consumeCounter = 0f;
-    public float attackCounter = 0f;
+    public float attackCounter;
 
     private bool isSelected = false;
     // Start is called before the first frame update
@@ -78,6 +79,8 @@ public class AITest : MonoBehaviour
         oldDestination = nullVector;
         InvokeRepeating("UpdatePath",0f,0.5f);
         this.health = unitInfo.health;
+        attackCounter = unitInfo.attackSpeed;
+        consumeCounter = unitInfo.gatherSpeed;
         
     }
 
@@ -101,15 +104,17 @@ public class AITest : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        
-        if(canMove && (target != null || destination != nullVector))
+        attackCounter += Time.deltaTime;
+
+        if (canMove && (target != null || destination != nullVector))
         {
             ComputeMovement();
         }
         
         //DO STUFF DEPENDING ON TYPE
         if(atDestination)
-        {   
+        {
+            rb2d.velocity = Vector2.zero;
             if(target != null && target.gameObject.tag == RESSOURCE_TAG && !isFull)
             {
                 ConsumeRessource(target);
@@ -172,14 +177,26 @@ public class AITest : MonoBehaviour
         }
     }
 
+
+    //SET A RANGE ATTRIBUTE AND TEST ON RANGE OR ELSE THEY WILL ATTACK FROM AFAR
     void AttackTarget(Transform target)
     {
-        attackCounter += Time.deltaTime;
-
-        if(attackCounter >= unitInfo.attackSpeed)
+        if (IsTargetInRange())
         {
-            target.SendMessage("TakeDamage", unitInfo.damage);
-            attackCounter = 0f;
+            if (attackCounter >= unitInfo.attackSpeed)
+            {
+                target.SendMessage("TakeDamage", unitInfo.damage);
+                attackCounter = 0f;
+            }
+        }
+
+        else if (!IsTargetInRange())
+        {
+            reachedEndOfPath = false;
+            atDestination = false;
+            canMove = true;
+            Debug.Log("Target gone far");
+            InvokeRepeating("UpdatePath", 0f, 0.5f);
         }
     }
 
@@ -250,10 +267,10 @@ public class AITest : MonoBehaviour
     public void SetTarget(Transform t)
     {
         //Cancel path if existing
-        if(seeker.GetCurrentPath() != null)
+        /*if(seeker.GetCurrentPath() != null)
         {
             seeker.CancelCurrentPathRequest();
-        }
+        }*/
 
         destination = nullVector;
         oldDestination = nullVector;    
@@ -261,9 +278,14 @@ public class AITest : MonoBehaviour
         this.oldTarget = this.target;
         this.target = t;
 
-        if(this.target != this.oldTarget)
+        if(this.target != this.oldTarget && this.target.tag != "Enemy")
         {
             //Debug.Log("test");
+            atDestination = false;
+            canMove = true;
+        }
+        else
+        {
             atDestination = false;
             canMove = true;
         }
@@ -344,5 +366,10 @@ public class AITest : MonoBehaviour
         {
             isFull = false;
         }
+    }
+
+    private bool IsTargetInRange()
+    {
+        return (Vector2.Distance(this.transform.position, target.position) <= range);
     }
 }

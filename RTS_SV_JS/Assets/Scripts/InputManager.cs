@@ -123,7 +123,7 @@ public class InputManager : MonoBehaviour
             //selectedObject.SendMessage("SetTarget", hit.transform);
             foreach(GameObject u in selectedObjects)
             {
-                Debug.Log("test");
+                
                 u.SendMessage("SetTarget", hit.transform);
             }
         }
