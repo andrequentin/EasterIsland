@@ -20,3 +20,4 @@ MonoBehaviour:
   capacity: 20
   damage: 1
   speed: 200
+  buildPower: 2

@@ -40,6 +40,8 @@ public class AITest : MonoBehaviour
     private const string DROPPOINT_TAG = "DropPoint";
     private const string ENEMY_TAG = "Enemy";
     private const string POSITION_TAG = "Position";
+    private const string BUILDABLE_TAG = "Buildable";
+    private const string ENEMYBUILDING_TAG = "EnemyBuilding";
 
     private Rigidbody2D rb2d;
     public Transform target;
@@ -68,6 +70,7 @@ public class AITest : MonoBehaviour
     
     public float consumeCounter = 0f;
     public float attackCounter;
+    public float buildCounter = 0f;
 
     private bool isSelected = false;
     // Start is called before the first frame update
@@ -99,6 +102,7 @@ public class AITest : MonoBehaviour
     private void Update()
     {
         CapacityCheck();
+       
     }
 
     // Update is called once per frame
@@ -128,6 +132,14 @@ public class AITest : MonoBehaviour
             {
                 AttackTarget(target);
             }
+            else if(target != null && target.gameObject.tag == ENEMYBUILDING_TAG)
+            {
+                AttackTarget(target);
+            }
+            else if(target != null && target.gameObject.tag == BUILDABLE_TAG)
+            {
+                BuildTarget(target);
+            }
             else if(destination != nullVector)
             { 
                 destination = nullVector;   
@@ -144,6 +156,8 @@ public class AITest : MonoBehaviour
         if(consumeCounter >= unitInfo.gatherSpeed)
         {
             target.SendMessage("Consume",unitInfo.gatherTick);
+            if (target.GetComponent<Ressource>().getYield() <= 0)
+                this.target = null;
             RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
 
             switch(rt)
@@ -186,6 +200,10 @@ public class AITest : MonoBehaviour
             if (attackCounter >= unitInfo.attackSpeed)
             {
                 target.SendMessage("TakeDamage", unitInfo.damage);
+                if (target.CompareTag(ENEMY_TAG) && target.GetComponent<MultiAgentFSM>().GetCurrentHealth() <= 0)
+                    this.target = null;
+                else if (target.CompareTag(ENEMYBUILDING_TAG) && target.GetComponent<BuildingHealth>().GetCurrentHealth() <= 0)
+                    this.target = null;
                 attackCounter = 0f;
             }
         }
@@ -199,6 +217,24 @@ public class AITest : MonoBehaviour
             InvokeRepeating("UpdatePath", 0f, 0.5f);
         }
     }
+
+   
+
+    void BuildTarget(Transform target)
+    {
+        buildCounter += Time.deltaTime;
+        if(buildCounter >= 3f)
+        {
+            target.SendMessage("BuildMe", this.unitInfo.buildPower);
+            if (target.GetComponent<Buildable>().GetBuildValue() >= target.GetComponent<Buildable>().GetMaxBuild())
+                this.target = null;
+            buildCounter = 0f;
+        }
+
+
+    }
+
+    
 
     void ComputeMovement()
     {
@@ -218,9 +254,10 @@ public class AITest : MonoBehaviour
         }
 
         Vector2 direction = ((Vector2) path.vectorPath[currentWaypoint] - rb2d.position).normalized;
-        Vector2 force = direction * unitInfo.speed * Time.deltaTime;
-        
-        rb2d.AddForce(force);
+        //Vector2 force = direction * unitInfo.speed * Time.deltaTime;
+        Vector2 force = direction * unitInfo.speed * Time.deltaTime ;
+        //rb2d.AddForce(force);
+        rb2d.velocity = force;
 
         float distance = Vector2.Distance(rb2d.position, path.vectorPath[currentWaypoint]);
         if(distance < nextWaypointDistance)

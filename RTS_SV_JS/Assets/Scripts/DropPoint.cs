@@ -85,4 +85,19 @@ public class DropPoint : MonoBehaviour
     {
         return this.vegetalQuantity;
     }
+
+    public void DecrementWood(int d)
+    {
+        this.woodQuantity -= d;
+    }
+
+    public void DecrementAnimal(int d)
+    {
+        this.animalQuantity -= d;
+    }
+
+    public void DecrementVegetal(int d)
+    {
+        this.vegetalQuantity -= d;
+    }
 }

@@ -10,7 +10,8 @@ public enum States
     MOVING,
     GATHERING,
     STOCKING,
-    FIGHTING
+    FIGHTING,
+    BUILDING
 }
 public class MultiAgentFSM : MonoBehaviour
 {
@@ -48,6 +49,7 @@ public class MultiAgentFSM : MonoBehaviour
 
     public float consumeCounter = 0f;
     public float attackCounter = 0f;
+    public float buildCounter = 0f;
 
     private const string RESSOURCE_TAG = "Ressource";
     private const string DROPPOINT_TAG = "EnemyDropPoint";
@@ -63,6 +65,11 @@ public class MultiAgentFSM : MonoBehaviour
         oldDestination = nullVector;
         InvokeRepeating("UpdatePath", 0f, 0.5f);
         
+    }
+
+    public int GetCurrentHealth()
+    {
+        return this.health;
     }
 
     void UpdatePath()
@@ -117,9 +124,10 @@ public class MultiAgentFSM : MonoBehaviour
         }
 
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb2d.position).normalized;
+        //Vector2 force = direction * unitInfo.speed * Time.deltaTime;
         Vector2 force = direction * unitInfo.speed * Time.deltaTime;
-
-        rb2d.AddForce(force);
+        //rb2d.AddForce(force);
+        rb2d.velocity = force;
 
         float distance = Vector2.Distance(rb2d.position, path.vectorPath[currentWaypoint]);
         if (distance < nextWaypointDistance)
@@ -160,29 +168,73 @@ public class MultiAgentFSM : MonoBehaviour
         {
             case States.IDLE:
                 IdleState();
+                if (EasyAI._instance.buildList.Count > 0)
+                {
+                    this.currentState = States.BUILDING;
+                    SetTarget(EasyAI._instance.buildList[0].transform);
+                }
                 break;
 
             case States.MOVING:
                 MovingState();
+                if (EasyAI._instance.buildList.Count > 0)
+                {
+                    this.currentState = States.BUILDING;
+                    SetTarget(EasyAI._instance.buildList[0].transform);
+                }
                 break;
 
             case States.GATHERING:
                 GatherState();
+                if (EasyAI._instance.buildList.Count > 0)
+                {
+                    this.currentState = States.BUILDING;
+                    SetTarget(EasyAI._instance.buildList[0].transform);
+                }
                 break;
 
             case States.STOCKING:
                 StockState();
+                if (EasyAI._instance.buildList.Count > 0)
+                {
+                    this.currentState = States.BUILDING;
+                    SetTarget(EasyAI._instance.buildList[0].transform);
+                }
                 break;
 
             case States.FIGHTING:
                 FightState();
+                if (EasyAI._instance.buildList.Count > 0)
+                {
+                    this.currentState = States.BUILDING;
+                    SetTarget(EasyAI._instance.buildList[0].transform);
+                }
                 break;
 
+            case States.BUILDING:
+                BuildState();
+                break;
 
         }
-       
+        
         CapacityCheck();
         UpdateGFX();
+    }
+
+    private void BuildState()
+    {
+        buildCounter += Time.deltaTime;
+        if (buildCounter >= 3f)
+        {
+            target.SendMessage("BuildMe", this.unitInfo.buildPower);
+            if (target.GetComponent<Buildable>().GetBuildValue() >= target.GetComponent<Buildable>().GetMaxBuild())
+            {
+                this.target = null;
+                this.currentState = States.IDLE;
+                EasyAI._instance.RemoveFirstFoundationFromList();
+            }
+            buildCounter = 0f;
+        }
     }
 
     private void IdleState()
@@ -221,7 +273,7 @@ public class MultiAgentFSM : MonoBehaviour
 
             else if (unitInfo.unitType == UnitTypes.NORMAL)
             {
-                if(scarceRessources[0])
+                if(scarceRessources[0] && GetNearestRessourcePoint(RessourceTypes.WOOD) != null)
                     SetTarget(GetNearestRessourcePoint(RessourceTypes.WOOD));
                 /*int temp = Random.Range(0, scarceRessources.Length);
                 bool tempBool = scarceRessources[temp];
@@ -258,6 +310,8 @@ public class MultiAgentFSM : MonoBehaviour
             if (consumeCounter >= unitInfo.gatherSpeed)
             {
                 target.SendMessage("Consume", unitInfo.gatherTick);
+                if (target.GetComponent<Ressource>().getYield() <= 0)
+                    this.target = null;
                 RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
 
                 switch (rt)
@@ -363,29 +417,33 @@ public class MultiAgentFSM : MonoBehaviour
 
     private Transform GetNearestRessourcePoint(RessourceTypes ressourceType)
     {
-        Ressource[] temp = FindObjectsOfType<Ressource>();
-        List<Ressource> ressourceList = new List<Ressource>();
-
-        for(int i = 0; i < temp.Length; i++)
+        if (FindObjectsOfType<Ressource>().Length > 0)
         {
-            if (temp[i].GetRessourceType() == ressourceType)
-                ressourceList.Add(temp[i]);
-        }
+            Ressource[] temp = FindObjectsOfType<Ressource>();
+            List<Ressource> ressourceList = new List<Ressource>();
 
-        Transform nearestRessource = ressourceList[0].gameObject.transform;
-        float nearestDistance = Vector2.Distance(this.gameObject.transform.position, nearestRessource.position);
-        
-        foreach(Ressource r in ressourceList)
-        {
-            float tempDistance = Vector2.Distance(this.gameObject.transform.position, r.gameObject.transform.position);
-            if(tempDistance < nearestDistance)
+            for (int i = 0; i < temp.Length; i++)
             {
-                nearestDistance = tempDistance;
-                nearestRessource = r.gameObject.transform;
+                if (temp[i].GetRessourceType() == ressourceType)
+                    ressourceList.Add(temp[i]);
             }
-        }
 
-        return nearestRessource;
+            Transform nearestRessource = ressourceList[0].gameObject.transform;
+            float nearestDistance = Vector2.Distance(this.gameObject.transform.position, nearestRessource.position);
+
+            foreach (Ressource r in ressourceList)
+            {
+                float tempDistance = Vector2.Distance(this.gameObject.transform.position, r.gameObject.transform.position);
+                if (tempDistance < nearestDistance)
+                {
+                    nearestDistance = tempDistance;
+                    nearestRessource = r.gameObject.transform;
+                }
+            }
+
+            return nearestRessource;
+        }
+        else return null;
     }
 
     private void CapacityCheck()

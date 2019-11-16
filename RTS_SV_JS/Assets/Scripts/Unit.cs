@@ -15,4 +15,5 @@ public class Unit : ScriptableObject
    public int capacity;
    public int damage;
    public float speed;
+    public int buildPower;
 }

@@ -11,6 +11,11 @@ TagManager:
   - Position
   - Enemy
   - EnemyDropPoint
+  - UI
+  - GameManager
+  - Buildable
+  - EnemyBuildable
+  - EnemyBuilding
   layers:
   - Default
   - TransparentFX

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class InputManager : MonoBehaviour
     private const string GROUND_TAG = "Ground";
     private const string DROPPOINT_TAG = "DropPoint";
     private const string ENEMY_TAG = "Enemy";
+    private const string BUILDABLE_TAG = "Buildable";
+    private const string ENEMYBUILDING_TAG = "EnemyBuilding";
 
     public GameObject selectedObject;
     public List<GameObject> selectedObjects;
@@ -21,7 +24,42 @@ public class InputManager : MonoBehaviour
     private Vector2 boxEndingPosition;
     [SerializeField]
     private Texture boxTexture;
-    
+    private bool buildSelected = false;
+
+    GameObject buildingToPut = null;
+    bool buildingPending = false;
+    int buildingCost;
+    public void SetBuildingToPut(GameObject b)
+    {
+        this.buildingToPut = b;
+        buildingPending = true;
+    }
+
+    public void SetBuildingToPutCost(int c)
+    {
+        this.buildingCost = c;
+    }
+
+    public void PutBuilding()
+    {
+        if (GameManager._instance.wood >= buildingCost)
+        {
+            Vector2 putPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Instantiate(buildingToPut, putPosition, Quaternion.identity);
+            this.buildingToPut = null;
+            buildingPending = false;
+            GameObject.FindGameObjectWithTag("DropPoint").SendMessage("DecrementWood", buildingCost);
+            buildingCost = 0;
+        }
+        else
+        {
+            MessageDisplayer._instance.DisplayMessage("Not enough wood");
+            this.buildingToPut = null;
+            buildingPending = false;
+            buildingCost = 0;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,9 +74,14 @@ public class InputManager : MonoBehaviour
             ToggleInfoPanel();
         }
 
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0) && !buildingPending)
         {
-            LeftClick();
+            if (!EventSystem.current.IsPointerOverGameObject())
+                LeftClick();
+        }
+        else if(Input.GetMouseButtonDown(0) && buildingPending)
+        {
+            PutBuilding();
         }
 
         if(Input.GetMouseButton(0) && boxStartingPosition == Vector2.zero)
@@ -57,7 +100,7 @@ public class InputManager : MonoBehaviour
             
         }
 
-        if(selectedObjects.Capacity > 0  && Input.GetMouseButtonDown(1))
+        if(selectedObjects.Count > 0  && Input.GetMouseButtonDown(1))
         {
             RightClick();
         }
@@ -77,6 +120,8 @@ public class InputManager : MonoBehaviour
             }
         }
 
+        
+
         boxStartingPosition = Vector2.zero;
         boxEndingPosition = Vector2.zero;
     }
@@ -88,7 +133,11 @@ public class InputManager : MonoBehaviour
 
         if(hit.collider != null && hit.transform.tag == SELECTABLE_TAG /*&& selectedObject==null*/)
         {
-            
+            if(buildSelected)
+            {
+                buildSelected = false;
+                GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleBuildPanel");
+            }
             //selectedObject = hit.collider.gameObject;
             hit.collider.gameObject.SendMessage("ToggleSelected");
             selectedObjects.Add(hit.collider.gameObject);
@@ -101,7 +150,7 @@ public class InputManager : MonoBehaviour
         //     selectedObject.SendMessage("ToggleSelected");
         // }
 
-        else if(hit.transform.tag == GROUND_TAG && /*selectedObject != null*/ selectedObjects.Capacity > 0)
+        else if(hit.transform.tag == GROUND_TAG &&  selectedObjects.Count > 0)
         {
             //selectedObject.SendMessage("ToggleSelected");
             //selectedObject = null;
@@ -111,6 +160,23 @@ public class InputManager : MonoBehaviour
             }
             selectedObjects.Clear();
         }
+
+        else if(hit.transform.tag == DROPPOINT_TAG)
+        {
+            foreach (GameObject u in selectedObjects)
+            {
+                u.SendMessage("ToggleSelected");
+            }
+            selectedObjects.Clear();
+            buildSelected = true;
+            GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleBuildPanel");
+        }
+
+        else if(hit.transform.tag == GROUND_TAG && buildSelected)
+        {
+            buildSelected = false;
+            GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleBuildPanel");
+        }
     }
 
     void RightClick()
@@ -118,7 +184,7 @@ public class InputManager : MonoBehaviour
         Vector2 origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(origin, -Vector2.up);
         Debug.Log(hit.collider.gameObject);
-        if(hit.collider != null && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == DROPPOINT_TAG || hit.transform.tag == ENEMY_TAG))
+        if(hit.collider != null && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == BUILDABLE_TAG || hit.transform.tag == ENEMYBUILDING_TAG || hit.transform.tag == DROPPOINT_TAG || hit.transform.tag == ENEMY_TAG))
         {
             //selectedObject.SendMessage("SetTarget", hit.transform);
             foreach(GameObject u in selectedObjects)
@@ -141,7 +207,7 @@ public class InputManager : MonoBehaviour
 
     void ToggleInfoPanel()
     {
-        if(selectedObjects.Capacity > 0)
+        if(selectedObjects.Count > 0)
         {
             foreach(GameObject u in selectedObjects)
             {

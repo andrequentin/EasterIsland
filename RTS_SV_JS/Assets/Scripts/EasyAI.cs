@@ -11,6 +11,18 @@ public class EasyAI : MonoBehaviour
 
     public int scarceRessourceThreshold;
 
+    private int maxPopulation = 5;
+    private int currentPopulation;
+    private List<GameObject> units = new List<GameObject>();
+
+    [SerializeField]
+    private GameObject houseFoundation;
+    private int houseCost = 20;
+
+    private Vector2 currentBuildSlot = new Vector2(-23f, 23);
+
+    public List<GameObject> buildList = new List<GameObject>();
+
     private void Awake()
     {
         if (_instance == null)
@@ -27,13 +39,16 @@ public class EasyAI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        AIDropPoint = GameObject.FindGameObjectWithTag(ENEMY_DROPPOINT).GetComponent<DropPoint>();         
+        AIDropPoint = GameObject.FindGameObjectWithTag(ENEMY_DROPPOINT).GetComponent<DropPoint>();
+        GameObject[] unitsTab = GameObject.FindGameObjectsWithTag("Enemy");
+        units.AddRange(unitsTab);
+        currentPopulation = units.Count;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        BrainWork();
     }
 
     public bool[] GetScarceRessource()
@@ -48,5 +63,35 @@ public class EasyAI : MonoBehaviour
             toReturn[2] = true;
 
         return toReturn;
+    }
+
+    public void BrainWork()
+    {
+       if(/*this.currentPopulation == (this.maxPopulation - 1) &&*/ this.houseCost <= this.AIDropPoint.GetWood())
+       {
+            //Build a house
+            BuildHouse();
+       }
+
+
+
+    }
+
+    private void BuildHouse()
+    {
+        GameObject temp = Instantiate(houseFoundation, currentBuildSlot, Quaternion.identity);
+        this.AIDropPoint.DecrementWood(houseCost);
+        this.currentBuildSlot.x += 2.5f;
+        this.buildList.Add(temp);
+    }
+
+    public void RemoveFirstFoundationFromList()
+    {
+        this.buildList.RemoveAt(0);
+    }
+
+    public void IncreasePopulation(int pop)
+    {
+        this.maxPopulation += pop;
     }
 }
