@@ -16,6 +16,7 @@ TagManager:
   - Buildable
   - EnemyBuildable
   - EnemyBuilding
+  - Prey
   layers:
   - Default
   - TransparentFX

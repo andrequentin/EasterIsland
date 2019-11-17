@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
     private const string GROUND_TAG = "Ground";
     private const string DROPPOINT_TAG = "DropPoint";
     private const string ENEMY_TAG = "Enemy";
+    private const string PREY_TAG = "Prey";
     private const string BUILDABLE_TAG = "Buildable";
     private const string ENEMYBUILDING_TAG = "EnemyBuilding";
 
@@ -184,13 +185,14 @@ public class InputManager : MonoBehaviour
         Vector2 origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(origin, -Vector2.up);
         Debug.Log(hit.collider.gameObject);
-        if(hit.collider != null && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == BUILDABLE_TAG || hit.transform.tag == ENEMYBUILDING_TAG || hit.transform.tag == DROPPOINT_TAG || hit.transform.tag == ENEMY_TAG))
+        if(hit.collider != null && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == BUILDABLE_TAG || hit.transform.tag == ENEMYBUILDING_TAG || hit.transform.tag == DROPPOINT_TAG || hit.transform.tag == ENEMY_TAG || hit.transform.tag == PREY_TAG))
         {
             //selectedObject.SendMessage("SetTarget", hit.transform);
             foreach(GameObject u in selectedObjects)
             {
                 
                 u.SendMessage("SetTarget", hit.transform);
+
             }
         }
         else if(hit.collider != null && hit.transform.tag == GROUND_TAG)

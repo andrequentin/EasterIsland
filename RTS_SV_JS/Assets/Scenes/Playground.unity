@@ -1317,7 +1317,7 @@ GameObject:
   - component: {fileID: 712359689}
   m_Layer: 0
   m_Name: Kiwi
-  m_TagString: Enemy
+  m_TagString: Prey
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1335,8 +1335,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ressourceType: 1
-  maxYield: 100
-  currentYield: 100
+  maxYield: 2
+  currentYield: 2
 --- !u!50 &712359690
 Rigidbody2D:
   serializedVersion: 4

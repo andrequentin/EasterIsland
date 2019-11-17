@@ -39,6 +39,7 @@ public class AITest : MonoBehaviour
     private const string RESSOURCE_TAG = "Ressource";
     private const string DROPPOINT_TAG = "DropPoint";
     private const string ENEMY_TAG = "Enemy";
+    private const string PREY_TAG = "Prey";
     private const string POSITION_TAG = "Position";
     private const string BUILDABLE_TAG = "Buildable";
     private const string ENEMYBUILDING_TAG = "EnemyBuilding";
@@ -132,6 +133,17 @@ public class AITest : MonoBehaviour
             {
                 AttackTarget(target);
             }
+            else if (target != null && target.gameObject.tag == PREY_TAG)
+            {
+                if (target.GetComponent<preyAI>().GetHealth() > 0)
+                {
+                    AttackTarget(target);
+                }
+                else
+                {
+                    ConsumeRessource(target);
+                }
+            }
             else if(target != null && target.gameObject.tag == ENEMYBUILDING_TAG)
             {
                 AttackTarget(target);
@@ -156,8 +168,9 @@ public class AITest : MonoBehaviour
         if(consumeCounter >= unitInfo.gatherSpeed)
         {
             target.SendMessage("Consume",unitInfo.gatherTick);
-            if (target.GetComponent<Ressource>().getYield() <= 0)
-                this.target = null;
+            if (target.GetComponent<Ressource>().getYield() <= 0) { 
+                target.GetComponent<preyAI>().Die(); this.target = null;
+            }
             RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
 
             switch(rt)
@@ -204,6 +217,9 @@ public class AITest : MonoBehaviour
                     this.target = null;
                 else if (target.CompareTag(ENEMYBUILDING_TAG) && target.GetComponent<BuildingHealth>().GetCurrentHealth() <= 0)
                     this.target = null;
+                else if (target.CompareTag(PREY_TAG) && target.GetComponent<preyAI>().GetHealth() <= 0) { 
+                    ConsumeRessource(target);  
+                }
                 attackCounter = 0f;
             }
         }
@@ -315,7 +331,7 @@ public class AITest : MonoBehaviour
         this.oldTarget = this.target;
         this.target = t;
 
-        if(this.target != this.oldTarget && this.target.tag != "Enemy")
+        if(this.target != this.oldTarget && this.target.tag != "Enemy" && this.target.tag != "Prey")
         {
             //Debug.Log("test");
             atDestination = false;

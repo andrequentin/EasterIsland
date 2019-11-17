@@ -8,11 +8,11 @@ public class preyAI : MonoBehaviour
 
 
     private int health;
-    int time = 0;
+    int time ;
     [SerializeField]
     private GameObject infoPanel;
     private bool infoPanelActive = false;
-
+    private bool alive = true;
     private Rigidbody2D rb2d;
     public Transform gfx;
 
@@ -23,7 +23,10 @@ public class preyAI : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         rb2d.drag = 20;
-        this.health = 20;
+        
+        rb2d.gravityScale = 0;
+        this.health = 2;
+        this.time = 0;
 
     }
 
@@ -48,15 +51,19 @@ public class preyAI : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (time == 20)
+        if (alive)
         {
-            Vector2 mv = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-            rb2d.velocity = mv;
-            time = 0;
-        }
-        else
-        {
-            time++;
+            if (time == 30)
+            {
+                Vector2 mv = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+                rb2d.velocity = mv;
+
+                time = 0;
+            }
+            else
+            {
+                time++;
+            }
         }
     }
     public int GetHealth()
@@ -68,11 +75,12 @@ public class preyAI : MonoBehaviour
         this.health -= dmg;
         if (this.health <= 0)
         {
-            Die();
+            //Die();
+            alive = false;
         }
     }
-    private void Die()
-    {
-        Destroy(this.gameObject);
+    public void Die()
+    {   
+        if(!alive)  Destroy(this.gameObject);
     }
 }
