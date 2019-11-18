@@ -94,4 +94,9 @@ public class EasyAI : MonoBehaviour
     {
         this.maxPopulation += pop;
     }
+
+    public void ChangeWoodMaxCapacity(int d)
+    {
+        this.AIDropPoint.ChangeWoodMaxCapacity(d);
+    }
 }

@@ -86,6 +86,12 @@ public class DropPoint : MonoBehaviour
         return this.vegetalQuantity;
     }
 
+    public void ChangeWoodMaxCapacity(int d)
+    {
+        this.woodMaxCapacity += d;
+        maxCapacity = woodMaxCapacity + animalMaxCapacity + vegetalMaxCapacity;
+    }
+
     public void DecrementWood(int d)
     {
         this.woodQuantity -= d;

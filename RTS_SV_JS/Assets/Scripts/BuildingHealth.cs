@@ -5,6 +5,9 @@ using UnityEngine;
 public class BuildingHealth : MonoBehaviour
 {
     [SerializeField]
+    private bool isEnemy;
+
+    [SerializeField]
     private int maxHealth;
 
     private int currentHealth;
@@ -38,7 +41,17 @@ public class BuildingHealth : MonoBehaviour
     {
         if(GetComponent<House>())
         {
-            EasyAI._instance.IncreasePopulation(-2);
+            if (isEnemy)
+                EasyAI._instance.IncreasePopulation(-2);
+            else
+                GameManager._instance.IncreasePopulation(-2);
+        }
+        else if(GetComponent<Sawmill>())
+        {
+            if (isEnemy)
+                EasyAI._instance.ChangeWoodMaxCapacity(-50);
+            else
+                GameManager._instance.GetDropPoint().GetComponent<DropPoint>().ChangeWoodMaxCapacity(-50);
         }
         //Else if for the other buildings
         Destroy(this.gameObject);
