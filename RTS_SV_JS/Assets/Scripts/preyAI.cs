@@ -6,21 +6,30 @@ public class preyAI : MonoBehaviour
 {
    
     private int health;
-    public int lookingformate = 0;
-    public int timeLeft; //grow and mate time
-    public int timeLeftMax=60;
+    public bool lookingformate = false;
+
+    public bool isAdult = false;
+
+    public float growTimer;
+    public float mateTimer;
+    public float timeLeftMax=15f;
+
+    [SerializeField]
     private int mated = 0;
     private float range = 1.5f;
+
     private GameObject mate;
     private bool hasMate = false;
+
     private int time = 0; // movement time
 
     
+    public bool isMale;
+
+
     public GameObject pref;
 
-    [SerializeField]
-    private GameObject infoPanel;
-    private bool infoPanelActive = false;
+  
     private bool alive = true;
     private Rigidbody2D rb2d;
     public Transform gfx;
@@ -30,14 +39,17 @@ public class preyAI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        mated = 0;
         rb2d = GetComponent<Rigidbody2D>();
         rb2d.drag = 5;
-        timeLeft = timeLeftMax;
+        growTimer = timeLeftMax;
+        isAdult = false;
         rb2d.gravityScale = 0;
         this.health = 2;
         this.time = 0;
-        StartCoroutine("LoseTime");
-        
+        //StartCoroutine("LoseTime");
+        if (!isMale)
+            gfx.GetComponent<SpriteRenderer>().color = new Color(255, 0, 151);
     
     }   
 
@@ -49,8 +61,15 @@ public class preyAI : MonoBehaviour
     }
     void UpdateGFX()
     {
-        if (lookingformate <= 0) { gfx.transform.localScale = new Vector3(0.5f, 0.5f, 1f); }
-        else { gfx.transform.localScale = new Vector3(1f, 1f, 1f); }
+        if (!isAdult) 
+        {
+            gfx.transform.localScale = new Vector3(0.5f, 0.5f, 1f); 
+        }
+        else 
+        { 
+            gfx.transform.localScale = new Vector3(1f, 1f, 1f);
+        }
+
         //Flip updating
         if (rb2d.velocity.x >= 0.01f)
         {
@@ -67,12 +86,27 @@ public class preyAI : MonoBehaviour
     }
     void FixedUpdate()
     {
+        
+
         if (alive)
         {
-            if (timeLeft <= 0) { lookingformate += 1; timeLeft = timeLeftMax; mate = null; hasMate = false; }
+            if (!isAdult)
+            {
+                growTimer -= Time.deltaTime;
+                if (growTimer <= 0)
+                {
+                    isAdult = true;
+                    lookingformate = true;
+                    mateTimer = 0;
+                    mate = null;
+                    hasMate = false;
+                    mated = 0;
+                }
 
+            }
 
-            if (lookingformate > 1 && lookingformate >= mated)
+            mateTimer -= Time.deltaTime;
+            if (isAdult && isMale && lookingformate && mated <= 3 && mateTimer <= 0)
             {
                 if (!hasMate || !mate.GetComponent<preyAI>().alive)
                 {
@@ -80,11 +114,17 @@ public class preyAI : MonoBehaviour
                     float minDIst = Mathf.Infinity;
                     foreach (GameObject m in possibleMates)
                     {
-                        float dist = Vector3.Distance(m.GetComponent<Transform>().localPosition, this.transform.localPosition);
-                        if (m.GetComponent<preyAI>().GetInstanceID() != this.GetInstanceID() && dist < minDIst && m.GetComponent<preyAI>().lookingformate > 1 && m.GetComponent<preyAI>().lookingformate > m.GetComponent<preyAI>().mated && m.GetComponent<preyAI>().alive)
+                        if (!m.GetComponent<preyAI>().isMale)
                         {
-                            mate = m;
-                            hasMate = true;
+                            float dist = Vector3.Distance(m.GetComponent<Transform>().localPosition, this.transform.localPosition);
+                            if (m.GetComponent<preyAI>().GetInstanceID() != this.GetInstanceID() && dist < minDIst && !m.GetComponent<preyAI>().hasMate && m.GetComponent<preyAI>().mated <= 3 && m.GetComponent<preyAI>().alive && m.GetComponent<preyAI>().isAdult)
+                            {
+                                mate = m;
+                                hasMate = true;
+
+                                m.GetComponent<preyAI>().hasMate = true;
+                                m.GetComponent<preyAI>().mate = this.gameObject;
+                            }
                         }
                     }
 
@@ -93,12 +133,25 @@ public class preyAI : MonoBehaviour
                 {
                     if (IsTargetInRange())
                     {
+                        mate.GetComponent<preyAI>().mated++;
+                        mate.GetComponent<preyAI>().hasMate = false;
+                        mate.GetComponent<preyAI>().mate = null;
+
                         mated++;
                         hasMate = false;
                         mate = null;
 
-                        Instantiate(pref);
-                        
+                        if (GameObject.FindGameObjectsWithTag("Prey").Length < 100)
+                        {
+                            GameObject temp = Instantiate(pref, this.transform.position, Quaternion.identity);
+                            int sex = Random.Range(0, 2);
+                            if (sex == 0)
+                                temp.GetComponent<preyAI>().isMale = true;
+                            else if(sex == 1)
+                                temp.GetComponent<preyAI>().isMale = false;
+                        }
+
+                        mateTimer = timeLeftMax;
                     }
                     else
                     {
@@ -155,7 +208,8 @@ public class preyAI : MonoBehaviour
     {
         return (Vector2.Distance(this.transform.position, mate.GetComponent<Transform>().localPosition) <= range);
     }
-    IEnumerator LoseTime()
+
+    /*IEnumerator LoseTime()
     {
         while (true)
         {
@@ -163,5 +217,5 @@ public class preyAI : MonoBehaviour
             timeLeft--;
 
         }
-    }
+    }*/
 }

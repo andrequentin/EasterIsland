@@ -99,4 +99,14 @@ public class EasyAI : MonoBehaviour
     {
         this.AIDropPoint.ChangeWoodMaxCapacity(d);
     }
+
+    public void ChangeAnimalMaxCapacity(int d)
+    {
+        this.AIDropPoint.ChangeAnimalMaxCapacity(d);
+    }
+
+    public void ChangeVegetalMaxCapacity(int d)
+    {
+        this.AIDropPoint.ChangeVegetalMaxCapacity(d);
+    }
 }

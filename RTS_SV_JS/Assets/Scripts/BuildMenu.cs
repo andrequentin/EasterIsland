@@ -9,8 +9,11 @@ public class BuildMenu : MonoBehaviour
     private GameObject houseFoundation;
     [SerializeField]
     private GameObject sawMillFoundation;
+    [SerializeField]
+    private GameObject granaryFoundation;
     private int houseCost = 20;
     private int sawMillCost = 30;
+    private int granaryCost = 30;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,5 +38,12 @@ public class BuildMenu : MonoBehaviour
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPut", sawMillFoundation);
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPutCost", sawMillCost);
         Debug.Log("Build Sawmill");
+    }
+
+    public void BuildGranary()
+    {
+        GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPut", granaryFoundation);
+        GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPutCost", granaryCost);
+        Debug.Log("Build Granary");
     }
 }

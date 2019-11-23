@@ -76,9 +76,19 @@ public class DropPoint : MonoBehaviour
         return this.woodQuantity;
     }
 
+    public int GetMaxWood()
+    {
+        return this.woodMaxCapacity;
+    }
+
     public int GetAnimal()
     {
         return this.animalQuantity;
+    }
+
+    public int GetMaxAnimal()
+    {
+        return this.animalMaxCapacity;
     }
 
     public int GetVegetal()
@@ -86,9 +96,26 @@ public class DropPoint : MonoBehaviour
         return this.vegetalQuantity;
     }
 
+    public int GetMaxVegetal()
+    {
+        return this.vegetalMaxCapacity;
+    }
+
     public void ChangeWoodMaxCapacity(int d)
     {
         this.woodMaxCapacity += d;
+        maxCapacity = woodMaxCapacity + animalMaxCapacity + vegetalMaxCapacity;
+    }
+
+    public void ChangeAnimalMaxCapacity(int d)
+    {
+        this.animalMaxCapacity += d;
+        maxCapacity = woodMaxCapacity + animalMaxCapacity + vegetalMaxCapacity;
+    }
+
+    public void ChangeVegetalMaxCapacity(int d)
+    {
+        this.vegetalMaxCapacity += d;
         maxCapacity = woodMaxCapacity + animalMaxCapacity + vegetalMaxCapacity;
     }
 

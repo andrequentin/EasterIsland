@@ -156,6 +156,8 @@ public class AITest : MonoBehaviour
             { 
                 destination = nullVector;   
             }
+
+            
         }
         //Debug.Log(seeker.GetCurrentPath());
         UpdateGFX();
@@ -197,6 +199,7 @@ public class AITest : MonoBehaviour
         int totalCarry = ressourcesQuantity[0] + ressourcesQuantity[1] + ressourcesQuantity[2];
         if(!target.GetComponent<DropPoint>().IsFull() && (target.GetComponent<DropPoint>().GetTotalCapacity() + totalCarry) < target.GetComponent<DropPoint>().GetMaxCapacity())
         {
+            Debug.Log(this.ressourcesQuantity);
             target.SendMessage("SetRessource", this.ressourcesQuantity);
             ressourcesQuantity[0] = 0;
             ressourcesQuantity[1] = 0;
@@ -266,21 +269,22 @@ public class AITest : MonoBehaviour
         }
         else
         {
+            
             reachedEndOfPath = false;
         }
 
-        Vector2 direction = ((Vector2) path.vectorPath[currentWaypoint] - rb2d.position).normalized;
+
+        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb2d.position).normalized;
         //Vector2 force = direction * unitInfo.speed * Time.deltaTime;
-        Vector2 force = direction * unitInfo.speed * Time.deltaTime ;
-        //rb2d.AddForce(force);
-        rb2d.velocity = force;
+        Vector2 force = direction * unitInfo.speed * Time.deltaTime;
+        rb2d.AddForce(force);
+        //rb2d.velocity = force;
 
         float distance = Vector2.Distance(rb2d.position, path.vectorPath[currentWaypoint]);
-        if(distance < nextWaypointDistance)
+        if (distance < nextWaypointDistance)
         {
             currentWaypoint++;
         }
-
     }
 
     void UpdateGFX()
@@ -324,6 +328,11 @@ public class AITest : MonoBehaviour
         {
             seeker.CancelCurrentPathRequest();
         }*/
+        if(path != null)
+        { 
+            OnPathComplete(path);
+            path = null;
+        }
 
         destination = nullVector;
         oldDestination = nullVector;    
@@ -349,12 +358,21 @@ public class AITest : MonoBehaviour
     public void SetDestination(Vector2 dest)
     {
         //Cancel path if existing
-        if(seeker.GetCurrentPath() != null)
+        /*if(seeker.GetCurrentPath() != null)
         {
             seeker.CancelCurrentPathRequest();
+            
+        }*/
+
+
+
+        if (path != null)
+        {
+            OnPathComplete(path);
+            path = null;
         }
 
-        if(target != null)
+        if (target != null)
             target = null;
         if(oldTarget != null)
             oldTarget = null; 

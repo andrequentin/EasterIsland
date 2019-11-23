@@ -25,9 +25,9 @@ public class TestCanvas : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        woodQuantity.text = ressourceManager.GetWood().ToString();
-        animalQuantity.text = ressourceManager.GetAnimal().ToString();
-        vegetalQuantity.text = ressourceManager.GetVegetal().ToString();
+        woodQuantity.text = ressourceManager.GetWood().ToString() + "/" + ressourceManager.GetMaxWood().ToString();
+        animalQuantity.text = ressourceManager.GetAnimal().ToString() + "/" + ressourceManager.GetMaxAnimal().ToString();
+        vegetalQuantity.text = ressourceManager.GetVegetal().ToString() + "/" + ressourceManager.GetMaxVegetal().ToString();
         populationQuantity.text = GameManager._instance.currentPopulation.ToString() + "/" + GameManager._instance.maxPopulation.ToString();
     }
 
