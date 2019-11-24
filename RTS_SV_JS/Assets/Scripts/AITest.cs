@@ -55,6 +55,7 @@ public class AITest : MonoBehaviour
 
     
     public Transform gfx;
+    
 
     [SerializeField]
     private GameObject infoPanel;
@@ -282,6 +283,7 @@ public class AITest : MonoBehaviour
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb2d.position).normalized;
         //Vector2 force = direction * unitInfo.speed * Time.deltaTime;
         Vector2 force = direction * unitInfo.speed * Time.deltaTime;
+        Debug.Log(force);
         rb2d.AddForce(force);
         //rb2d.velocity = force;
 
@@ -329,15 +331,18 @@ public class AITest : MonoBehaviour
     public void SetTarget(Transform t)
     {
         //Cancel path if existing
-        /*if(seeker.GetCurrentPath() != null)
+        /*if (seeker.GetCurrentPath() != null)
         {
             seeker.CancelCurrentPathRequest();
+            this.rb2d.velocity = Vector2.zero;
+
         }*/
-        if(path != null)
+        ClearPath();
+        /*if (path != null)
         { 
             OnPathComplete(path);
             path = null;
-        }
+        }*/
 
         destination = nullVector;
         oldDestination = nullVector;    
@@ -366,16 +371,13 @@ public class AITest : MonoBehaviour
         /*if(seeker.GetCurrentPath() != null)
         {
             seeker.CancelCurrentPathRequest();
+            this.rb2d.velocity = Vector2.zero;
             
         }*/
 
 
 
-        if (path != null)
-        {
-            OnPathComplete(path);
-            path = null;
-        }
+        ClearPath();
 
         if (target != null)
             target = null;
@@ -447,5 +449,19 @@ public class AITest : MonoBehaviour
     private bool IsTargetInRange()
     {
         return (Vector2.Distance(this.transform.position, target.position) <= range);
+    }
+
+    private void ClearPath()
+    {
+        // Abort any calculations in progress
+        if (seeker != null) seeker.CancelCurrentPathRequest();
+        canMove = false;
+        atDestination = true;
+        reachedEndOfPath = false;
+
+        // Release current path so that it can be pooled
+        /*if (path != null) path.Release(this);*/
+        path = null;
+        
     }
 }

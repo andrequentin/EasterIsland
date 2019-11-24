@@ -52,6 +52,11 @@ public class GameManager : MonoBehaviour
         this.maxPopulation += pop;
     }
 
+    public void IncreaseCurrentPopulation()
+    {
+        this.currentPopulation++;
+    }
+
     public GameObject GetDropPoint()
     {
         return this.dropPoint;

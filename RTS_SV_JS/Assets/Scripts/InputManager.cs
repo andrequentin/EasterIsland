@@ -143,7 +143,7 @@ public class InputManager : MonoBehaviour
             }
             //selectedObject = hit.collider.gameObject;
             hit.collider.gameObject.SendMessage("ToggleSelected");
-            selectedObjects.AddRange(units);
+            selectedObjects.Add(hit.collider.gameObject);
             /*if (!hit.collider.gameObject.GetComponent<AITest>().IsSelected())
                 selectedObjects.Add(hit.collider.gameObject);
             else

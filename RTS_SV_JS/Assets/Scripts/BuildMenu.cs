@@ -57,6 +57,7 @@ public class BuildMenu : MonoBehaviour
         {
             Instantiate(citizenPrefab, citizenSpawnPosition, Quaternion.identity);
             GameManager._instance.GetDropPoint().GetComponent<DropPoint>().DecrementAnimal(citizenCost);
+            GameManager._instance.IncreaseCurrentPopulation();
             Debug.Log("Create Citizen");
         }
         else

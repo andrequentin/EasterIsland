@@ -106,7 +106,7 @@ public class preyAI : MonoBehaviour
             }
 
             mateTimer -= Time.deltaTime;
-            if (isAdult && isMale && lookingformate && mated <= 3 && mateTimer <= 0)
+            if (isAdult && isMale && lookingformate && mated <= 10 && mateTimer <= 0)
             {
                 if (!hasMate || !mate.GetComponent<preyAI>().alive)
                 {
@@ -203,8 +203,16 @@ public class preyAI : MonoBehaviour
         }
     }
     public void Die()
-    {   
-        if(!alive)  Destroy(this.gameObject);
+    {
+        if (!alive)
+        {
+            if (this.mate != null)
+            {
+                this.mate.GetComponent<preyAI>().hasMate = false;
+                this.mate.GetComponent<preyAI>().mate = null;
+            }
+            Destroy(this.gameObject);
+        }
     }
     private bool IsTargetInRange()
     {
