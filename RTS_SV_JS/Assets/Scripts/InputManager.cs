@@ -13,7 +13,7 @@ public class InputManager : MonoBehaviour
     private const string PREY_TAG = "Prey";
     private const string BUILDABLE_TAG = "Buildable";
     private const string ENEMYBUILDING_TAG = "EnemyBuilding";
-
+    private bool isMultiSelecting = false;
     public GameObject selectedObject;
     public List<GameObject> selectedObjects;
     private GameObject[] units;
@@ -87,6 +87,7 @@ public class InputManager : MonoBehaviour
 
         if(Input.GetMouseButton(0) && boxStartingPosition == Vector2.zero)
         {
+            isMultiSelecting = true;
             boxStartingPosition = Input.mousePosition;
         }
         else if(Input.GetMouseButton(0) && boxStartingPosition != Vector2.zero)
@@ -94,11 +95,11 @@ public class InputManager : MonoBehaviour
             boxEndingPosition = Input.mousePosition;
         }
 
-        if(Input.GetMouseButtonUp(0))
+        if(Input.GetMouseButtonUp(0) && !buildingPending)
         {
             units = GameObject.FindGameObjectsWithTag(SELECTABLE_TAG);
             MultiSelect();
-            
+            isMultiSelecting = false;
         }
 
         if(selectedObjects.Count > 0  && Input.GetMouseButtonDown(1))
@@ -111,6 +112,7 @@ public class InputManager : MonoBehaviour
 
     public void MultiSelect()
     {
+
         foreach(GameObject u in units)
         {
             Vector2 unitPosition = Camera.main.WorldToScreenPoint(u.transform.position);
@@ -141,7 +143,11 @@ public class InputManager : MonoBehaviour
             }
             //selectedObject = hit.collider.gameObject;
             hit.collider.gameObject.SendMessage("ToggleSelected");
-            selectedObjects.Add(hit.collider.gameObject);
+            selectedObjects.AddRange(units);
+            /*if (!hit.collider.gameObject.GetComponent<AITest>().IsSelected())
+                selectedObjects.Add(hit.collider.gameObject);
+            else
+                selectedObjects.Remove(hit.collider.gameObject);*/
             //selectedObject.SendMessage("ToggleSelected");
         }
         // else if(hit.collider != null && hit.transform.tag == SELECTABLE_TAG)

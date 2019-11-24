@@ -106,6 +106,11 @@ public class AITest : MonoBehaviour
        
     }
 
+    public bool IsSelected()
+    {
+        return this.isSelected;
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {

@@ -14,6 +14,10 @@ public class BuildMenu : MonoBehaviour
     private int houseCost = 20;
     private int sawMillCost = 30;
     private int granaryCost = 30;
+    private int citizenCost = 10;
+    [SerializeField]
+    private GameObject citizenPrefab;
+    private Vector3 citizenSpawnPosition = new Vector3(15, -22, -1);
     // Start is called before the first frame update
     void Start()
     {
@@ -45,5 +49,19 @@ public class BuildMenu : MonoBehaviour
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPut", granaryFoundation);
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPutCost", granaryCost);
         Debug.Log("Build Granary");
+    }
+
+    public void BuildCitizen()
+    {
+        if(GameManager._instance.GetDropPoint().GetComponent<DropPoint>().GetAnimal() >= citizenCost)
+        {
+            Instantiate(citizenPrefab, citizenSpawnPosition, Quaternion.identity);
+            GameManager._instance.GetDropPoint().GetComponent<DropPoint>().DecrementAnimal(citizenCost);
+            Debug.Log("Create Citizen");
+        }
+        else
+        {
+            MessageDisplayer._instance.DisplayMessage("Not enough meat");
+        }
     }
 }

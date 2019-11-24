@@ -143,7 +143,9 @@ public class preyAI : MonoBehaviour
 
                         if (GameObject.FindGameObjectsWithTag("Prey").Length < 100)
                         {
-                            GameObject temp = Instantiate(pref, this.transform.position, Quaternion.identity);
+                            Vector3 pos = this.transform.position;
+                            pos.z = -1;
+                            GameObject temp = Instantiate(pref, pos, Quaternion.identity);
                             int sex = Random.Range(0, 2);
                             if (sex == 0)
                                 temp.GetComponent<preyAI>().isMale = true;
