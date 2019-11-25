@@ -134,6 +134,7 @@ public class MultiAgentFSM : MonoBehaviour
         {
             currentWaypoint++;
         }
+        rb2d.velocity.Normalize();
 
     }
 

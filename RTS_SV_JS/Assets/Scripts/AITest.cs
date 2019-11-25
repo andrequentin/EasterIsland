@@ -292,6 +292,8 @@ public class AITest : MonoBehaviour
         {
             currentWaypoint++;
         }
+        rb2d.velocity.Normalize();
+
     }
 
     void UpdateGFX()
