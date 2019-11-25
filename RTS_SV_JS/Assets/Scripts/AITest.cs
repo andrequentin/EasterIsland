@@ -115,7 +115,7 @@ public class AITest : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        attackCounter += Time.deltaTime;
+        if (attackCounter < unitInfo.attackSpeed) { attackCounter += Time.deltaTime; }
 
         if (canMove && (target != null || destination != nullVector))
         {
