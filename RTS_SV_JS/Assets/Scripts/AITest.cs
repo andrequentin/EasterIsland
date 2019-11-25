@@ -51,7 +51,7 @@ public class AITest : MonoBehaviour
     public Vector2 oldDestination;
     
     private Vector2 nullVector { get { return new Vector2(-9999, -9999); } }
-    public float nextWaypointDistance = 3f;
+    public float nextWaypointDistance = 1.5f;
 
     
     public Transform gfx;
@@ -82,6 +82,7 @@ public class AITest : MonoBehaviour
         seeker = GetComponent<Seeker>();
         destination = nullVector;
         oldDestination = nullVector;
+        CancelInvoke("UpdatePath");
         InvokeRepeating("UpdatePath",0f,0.5f);
         this.health = unitInfo.health;
         attackCounter = unitInfo.attackSpeed;
@@ -115,7 +116,7 @@ public class AITest : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (attackCounter < unitInfo.attackSpeed) { attackCounter += Time.deltaTime; }
+        attackCounter += Time.deltaTime; 
 
         if (canMove && (target != null || destination != nullVector))
         {
@@ -239,6 +240,7 @@ public class AITest : MonoBehaviour
             atDestination = false;
             canMove = true;
             Debug.Log("Target gone far");
+            CancelInvoke("UpdatePath");
             InvokeRepeating("UpdatePath", 0f, 0.5f);
         }
     }
@@ -363,7 +365,7 @@ public class AITest : MonoBehaviour
             atDestination = false;
             canMove = true;
         }
-
+        CancelInvoke("UpdatePath");
         InvokeRepeating("UpdatePath",0f,0.5f);
     }
 
@@ -394,7 +396,7 @@ public class AITest : MonoBehaviour
             atDestination = false;
             canMove = true;
         }
-
+        CancelInvoke("UpdatePath");
         InvokeRepeating("UpdatePath",0f,0.5f);
     }
    
@@ -465,5 +467,15 @@ public class AITest : MonoBehaviour
         /*if (path != null) path.Release(this);*/
         path = null;
         
+    }
+
+    public void UpgradeUnit(Unit newUnit)
+    {
+        this.unitInfo = newUnit;
+
+        this.health = unitInfo.health;
+        attackCounter = unitInfo.attackSpeed;
+        consumeCounter = unitInfo.gatherSpeed;
+        gfx.GetComponent<SpriteRenderer>().sprite = unitInfo.sprite;
     }
 }

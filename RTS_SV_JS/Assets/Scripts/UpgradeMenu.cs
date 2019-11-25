@@ -32,6 +32,11 @@ public class UpgradeMenu : MonoBehaviour
                 totalMeatCost += warriorCostMeat;
             }
         }
+        if(totalWoodCost == 0 || totalMeatCost == 0)
+        {
+            MessageDisplayer._instance.DisplayMessage("Can't upgrade units");
+            return;
+        }
         if(totalWoodCost > GameManager._instance.wood || totalMeatCost > GameManager._instance.animal)
         {
             MessageDisplayer._instance.DisplayMessage("Not enough ressources");
@@ -40,9 +45,13 @@ public class UpgradeMenu : MonoBehaviour
         {
             foreach (GameObject u in im.selectedObjects)
             {
-                u.GetComponent<AITest>().unitInfo = unitTypes[0];
-                GameManager._instance.GetDropPoint().GetComponent<DropPoint>().DecrementWood(warriorCostWood);
-                GameManager._instance.GetDropPoint().GetComponent<DropPoint>().DecrementAnimal(warriorCostMeat);
+                if (u.GetComponent<AITest>().unitInfo.unitType == UnitTypes.NORMAL)
+                {
+                    //u.GetComponent<AITest>().unitInfo = unitTypes[0];
+                    u.GetComponent<AITest>().UpgradeUnit(unitTypes[0]);
+                    GameManager._instance.GetDropPoint().GetComponent<DropPoint>().DecrementWood(warriorCostWood);
+                    GameManager._instance.GetDropPoint().GetComponent<DropPoint>().DecrementAnimal(warriorCostMeat);
+                }
             }
         }
     }

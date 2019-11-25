@@ -7,6 +7,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Unit", menuName = "Unit")]
 public class Unit : ScriptableObject
 {
+    public Sprite sprite;
    public UnitTypes unitType;
    public int health;
    public float gatherSpeed;
