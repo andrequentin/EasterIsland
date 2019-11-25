@@ -17,7 +17,7 @@ public class InputManager : MonoBehaviour
     public GameObject selectedObject;
     public List<GameObject> selectedObjects;
     private GameObject[] units;
-
+  
     [SerializeField]
     private GameObject goToObject;
     private Rect selectBox;
@@ -26,7 +26,7 @@ public class InputManager : MonoBehaviour
     [SerializeField]
     private Texture boxTexture;
     private bool buildSelected = false;
-
+    private bool upgradeSelected = false;
     GameObject buildingToPut = null;
     bool buildingPending = false;
     int buildingCost;
@@ -75,6 +75,12 @@ public class InputManager : MonoBehaviour
             ToggleInfoPanel();
         }
 
+        if(Input.GetKeyDown(KeyCode.U))
+        {    
+            upgradeSelected = true;
+            GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleUpgradePanel");
+        }
+
         if(Input.GetMouseButtonDown(0) && !buildingPending)
         {
             if (!EventSystem.current.IsPointerOverGameObject())
@@ -109,6 +115,8 @@ public class InputManager : MonoBehaviour
 
         selectBox = new Rect(boxStartingPosition.x,Screen.height - boxStartingPosition.y, boxEndingPosition.x - boxStartingPosition.x, -1 * ((Screen.height - boxStartingPosition.y) - (Screen.height - boxEndingPosition.y)));
     }
+
+    
 
     public void MultiSelect()
     {
@@ -190,6 +198,7 @@ public class InputManager : MonoBehaviour
     {
         Vector2 origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(origin, -Vector2.up);
+        Debug.Log(origin);
         Debug.Log(hit.collider.gameObject);
         if(hit.collider != null && !hit.collider.CompareTag(GROUND_TAG) && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == BUILDABLE_TAG || hit.transform.tag == ENEMYBUILDING_TAG || hit.transform.tag == DROPPOINT_TAG || hit.transform.tag == ENEMY_TAG || hit.transform.tag == PREY_TAG))
         {
@@ -223,6 +232,8 @@ public class InputManager : MonoBehaviour
             }
         }
     }
+
+    
 
     void OnGUI()
     {
