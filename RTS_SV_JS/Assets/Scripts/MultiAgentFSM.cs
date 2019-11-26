@@ -22,6 +22,9 @@ public class MultiAgentFSM : MonoBehaviour
     private bool isFull = false;
     private int[] ressourcesQuantity = new int[3];
 
+    private float detectionRange;
+
+    private bool isBeingAttacked = false;
 
     private States currentState;
     bool[] scarceRessources = new bool[3];
@@ -31,6 +34,7 @@ public class MultiAgentFSM : MonoBehaviour
     public Transform oldTarget;
     public Vector2 destination;
     public Vector2 oldDestination;
+    float beingAttackedResetCounter = 0;
 
     private Vector2 nullVector { get { return new Vector2(-9999, -9999); } }
     public float nextWaypointDistance = 3f;
@@ -58,7 +62,7 @@ public class MultiAgentFSM : MonoBehaviour
     {
         this.health = unitInfo.health;
         currentState = States.IDLE;
-
+        this.gfx.GetComponent<SpriteRenderer>().sprite = unitInfo.sprite;
         rb2d = GetComponent<Rigidbody2D>();
         seeker = GetComponent<Seeker>();
         destination = nullVector;
@@ -165,6 +169,20 @@ public class MultiAgentFSM : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+
+        //Reset being attacked after 10 seconds
+        if(isBeingAttacked)
+        {
+            beingAttackedResetCounter += Time.deltaTime;
+            if(beingAttackedResetCounter >= 10f)
+            {
+                beingAttackedResetCounter = 0;
+                isBeingAttacked = false;
+            }
+        }
+
+
+
         switch(currentState)
         {
             case States.IDLE:
@@ -240,6 +258,7 @@ public class MultiAgentFSM : MonoBehaviour
 
     private void IdleState()
     {
+        //Ressource Checking
         scarceRessources = EasyAI._instance.GetScarceRessource();
         if (CheckScarceRessource())
         { 
@@ -274,9 +293,9 @@ public class MultiAgentFSM : MonoBehaviour
 
             else if (unitInfo.unitType == UnitTypes.NORMAL)
             {
-                if(scarceRessources[0] && GetNearestRessourcePoint(RessourceTypes.WOOD) != null)
-                    SetTarget(GetNearestRessourcePoint(RessourceTypes.WOOD));
-                /*int temp = Random.Range(0, scarceRessources.Length);
+                //if(scarceRessources[0] && GetNearestRessourcePoint(RessourceTypes.WOOD) != null)
+                //    SetTarget(GetNearestRessourcePoint(RessourceTypes.WOOD));
+                int temp = Random.Range(0, scarceRessources.Length);
                 bool tempBool = scarceRessources[temp];
                 while(!tempBool)
                 {
@@ -295,10 +314,37 @@ public class MultiAgentFSM : MonoBehaviour
                     case 2:
                         target = GetNearestRessourcePoint(RessourceTypes.VEGETAL);
                         break;
-                }*/
+                }
             }
 
             this.currentState = States.MOVING;
+        }
+
+        //Fighting
+        //if normal unit,lumberjack or gatherer, fight back but flee when low hp
+        if (this.unitInfo.unitType == UnitTypes.NORMAL || this.unitInfo.unitType == UnitTypes.LUMBERJACK || this.unitInfo.unitType == UnitTypes.GATHERER)
+        {
+            if(isBeingAttacked)
+            {
+                this.currentState = States.FIGHTING;
+
+                //run when low hp
+            }
+        }
+    
+        //if warrior, detect ennemies and fight till the end 
+        if(this.unitInfo.unitType == UnitTypes.WARRIOR)
+        {
+            Collider2D[] detected = Physics2D.OverlapCircleAll(this.transform.position, detectionRange);
+            foreach(Collider2D c in detected)
+            {
+                if(c.gameObject.GetComponent<AITest>())
+                {
+                    this.target = c.gameObject.transform;
+                    this.currentState = States.MOVING;
+                    break;
+                }
+            }
         }
     }
 
@@ -364,6 +410,11 @@ public class MultiAgentFSM : MonoBehaviour
             {
                 this.currentState = States.STOCKING;
             }
+
+            else if (target != null && target.gameObject.tag == "Selectable")
+            {
+                this.currentState = States.FIGHTING;
+            }
         }
     }
 
@@ -390,6 +441,7 @@ public class MultiAgentFSM : MonoBehaviour
 
     public void TakeDamage(int dmg)
     {
+        isBeingAttacked = true;
         this.health -= dmg;
         if(this.health <= 0)
         {
@@ -458,5 +510,20 @@ public class MultiAgentFSM : MonoBehaviour
         {
             isFull = false;
         }
+    }
+
+    public void UpgradeUnit(Unit newUnit)
+    {
+        this.unitInfo = newUnit;
+
+        this.health = unitInfo.health;
+        attackCounter = unitInfo.attackSpeed;
+        consumeCounter = unitInfo.gatherSpeed;
+        gfx.GetComponent<SpriteRenderer>().sprite = unitInfo.sprite;
+    }
+
+    public void ToggleBeingAttacked()
+    {
+        this.isBeingAttacked = !this.isBeingAttacked;
     }
 }

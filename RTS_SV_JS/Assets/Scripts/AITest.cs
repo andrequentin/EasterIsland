@@ -286,8 +286,8 @@ public class AITest : MonoBehaviour
         //Vector2 force = direction * unitInfo.speed * Time.deltaTime;
         Vector2 force = direction * unitInfo.speed * Time.deltaTime;
         Debug.Log(force);
-        rb2d.AddForce(force);
-        //rb2d.velocity = force;
+        //rb2d.AddForce(force);
+        rb2d.velocity = force;
 
         float distance = Vector2.Distance(rb2d.position, path.vectorPath[currentWaypoint]);
         if (distance < nextWaypointDistance)
