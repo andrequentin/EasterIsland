@@ -302,19 +302,22 @@ public class MultiAgentFSM : MonoBehaviour
                     temp = Random.Range(0, scarceRessources.Length);
                     tempBool = scarceRessources[temp];
                 }
-
+                temp = 0;
                 switch(temp)
                 {
                     case 0:
-                        target = GetNearestRessourcePoint(RessourceTypes.WOOD);
+                        SetTarget( GetNearestRessourcePoint(RessourceTypes.WOOD));
+                        
                         break;
                     case 1:
-                        target = GetNearestRessourcePoint(RessourceTypes.ANIMAL);
+                        SetTarget(GetNearestRessourcePoint(RessourceTypes.ANIMAL));
                         break;
                     case 2:
-                        target = GetNearestRessourcePoint(RessourceTypes.VEGETAL);
+                        SetTarget(GetNearestRessourcePoint(RessourceTypes.VEGETAL));
                         break;
                 }
+                //print(temp);
+               // print(target);
             }
 
             this.currentState = States.MOVING;
@@ -356,26 +359,50 @@ public class MultiAgentFSM : MonoBehaviour
 
             if (consumeCounter >= unitInfo.gatherSpeed)
             {
-                target.SendMessage("Consume", unitInfo.gatherTick);
-                if (target.GetComponent<Ressource>().getYield() <= 0)
-                    this.target = null;
-                RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
-
-                switch (rt)
+                if (target.GetComponent<Ressource>())
                 {
-                    case RessourceTypes.WOOD:
-                        this.ressourcesQuantity[0] += unitInfo.gatherTick;
-                        break;
-                    case RessourceTypes.ANIMAL:
-                        this.ressourcesQuantity[1] += unitInfo.gatherTick;
-                        break;
-                    case RessourceTypes.VEGETAL:
-                        this.ressourcesQuantity[2] += unitInfo.gatherTick;
-                        break;
-                    default:
-                        break;
-                }
 
+                    if (target.GetComponent<Ressource>().getYield() <= 0)
+                    {
+                        target.GetComponent<preyAI>().Die(); this.target = null;
+                    }
+                    RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
+
+                    switch (rt)
+                    {
+                        case RessourceTypes.WOOD:
+                            this.ressourcesQuantity[0] += unitInfo.gatherTick;
+                            break;
+                        case RessourceTypes.ANIMAL:
+                            this.ressourcesQuantity[1] += unitInfo.gatherTick;
+                            break;
+                        case RessourceTypes.VEGETAL:
+                            this.ressourcesQuantity[2] += unitInfo.gatherTick;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (target.GetComponent<treesRessources>())
+                {
+                    RessourceTypes rt = target.GetComponent<treesRessources>().GetRessourceType();
+
+                    switch (rt)
+                    {
+                        case RessourceTypes.WOOD:
+                            this.ressourcesQuantity[0] += unitInfo.gatherTick;
+                            break;
+                        case RessourceTypes.ANIMAL:
+                            this.ressourcesQuantity[1] += unitInfo.gatherTick;
+                            break;
+                        case RessourceTypes.VEGETAL:
+                            this.ressourcesQuantity[2] += unitInfo.gatherTick;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                target.SendMessage("Consume", unitInfo.gatherTick);
                 consumeCounter = 0f;
             }
         }
@@ -473,27 +500,35 @@ public class MultiAgentFSM : MonoBehaviour
         if (FindObjectsOfType<Ressource>().Length > 0)
         {
             Ressource[] temp = FindObjectsOfType<Ressource>();
-            List<Ressource> ressourceList = new List<Ressource>();
-
+            treesRessources[] temp2 = FindObjectsOfType<treesRessources>();
+            List<Transform> ressourceLocation = new List<Transform>();
             for (int i = 0; i < temp.Length; i++)
             {
                 if (temp[i].GetRessourceType() == ressourceType)
-                    ressourceList.Add(temp[i]);
+                    ressourceLocation.Add(temp[i].gameObject.transform);
             }
 
-            Transform nearestRessource = ressourceList[0].gameObject.transform;
+            for (int i = 0; i < temp2.Length; i++)
+            {
+                if((ressourceType == RessourceTypes.VEGETAL && RessourceTypes.VEGETAL == temp2[i].GetRessourceType()) || (ressourceType == RessourceTypes.WOOD))
+                {
+                    ressourceLocation.Add(temp2[i].gameObject.transform);
+                }
+            }
+            
+            Transform nearestRessource = ressourceLocation[0];
             float nearestDistance = Vector2.Distance(this.gameObject.transform.position, nearestRessource.position);
 
-            foreach (Ressource r in ressourceList)
+            foreach (Transform r in nearestRessource)
             {
-                float tempDistance = Vector2.Distance(this.gameObject.transform.position, r.gameObject.transform.position);
+                float tempDistance = Vector2.Distance(this.gameObject.transform.position, r.position);
                 if (tempDistance < nearestDistance)
                 {
                     nearestDistance = tempDistance;
                     nearestRessource = r.gameObject.transform;
                 }
             }
-
+            print(nearestRessource);
             return nearestRessource;
         }
         else return null;

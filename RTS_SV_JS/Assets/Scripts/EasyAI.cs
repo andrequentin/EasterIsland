@@ -130,6 +130,7 @@ public class EasyAI : MonoBehaviour
 
     void CheckPendingCitizensForUpgrade()
     {
+        if(pendingCitizens.Count >0)
         UpgradeCitizen(pendingCitizens[0]);
     }
 

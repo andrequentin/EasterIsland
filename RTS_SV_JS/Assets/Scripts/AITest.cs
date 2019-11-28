@@ -177,26 +177,47 @@ public class AITest : MonoBehaviour
         if(consumeCounter >= unitInfo.gatherSpeed)
         {
             target.SendMessage("Consume",unitInfo.gatherTick);
-            if (target.GetComponent<Ressource>().getYield() <= 0) { 
-                target.GetComponent<preyAI>().Die(); this.target = null;
-            }
-            RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
-
-            switch(rt)
+            if (target.GetComponent<Ressource>())
             {
-                case RessourceTypes.WOOD:
-                    this.ressourcesQuantity[0] += unitInfo.gatherTick;
-                    break;
-                case RessourceTypes.ANIMAL:
-                    this.ressourcesQuantity[1] += unitInfo.gatherTick;
-                    break;
-                case RessourceTypes.VEGETAL:
-                    this.ressourcesQuantity[2] += unitInfo.gatherTick;
-                    break;
-                default:
-                    break;
-            }
 
+                if (target.GetComponent<Ressource>().getYield() <= 0) { 
+                    target.GetComponent<preyAI>().Die(); this.target = null;
+                }
+                RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
+
+                switch (rt)
+                {
+                    case RessourceTypes.WOOD:
+                        this.ressourcesQuantity[0] += unitInfo.gatherTick;
+                        break;
+                    case RessourceTypes.ANIMAL:
+                        this.ressourcesQuantity[1] += unitInfo.gatherTick;
+                        break;
+                    case RessourceTypes.VEGETAL:
+                        this.ressourcesQuantity[2] += unitInfo.gatherTick;
+                        break;
+                    default:
+                        break;
+                }
+            }else if (target.GetComponent<treesRessources>())
+            {
+                RessourceTypes rt = target.GetComponent<treesRessources>().GetRessourceType();
+
+                switch (rt)
+                {
+                    case RessourceTypes.WOOD:
+                        this.ressourcesQuantity[0] += unitInfo.gatherTick;
+                        break;
+                    case RessourceTypes.ANIMAL:
+                        this.ressourcesQuantity[1] += unitInfo.gatherTick;
+                        break;
+                    case RessourceTypes.VEGETAL:
+                        this.ressourcesQuantity[2] += unitInfo.gatherTick;
+                        break;
+                    default:
+                        break;
+                }
+            }
             consumeCounter = 0f;
         }
     }

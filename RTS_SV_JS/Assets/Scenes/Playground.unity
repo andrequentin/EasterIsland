@@ -3533,9 +3533,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1566635038}
-  - component: {fileID: 1566635039}
   - component: {fileID: 1566635037}
-  - component: {fileID: 1566635040}
+  - component: {fileID: 1566635039}
   m_Layer: 0
   m_Name: Forest
   m_TagString: Ressource
@@ -3594,27 +3593,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1566635036}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbb8bbc2d57294444876a1ac8b02cf7c, type: 3}
+  m_Script: {fileID: 11500000, guid: 3df43eed8ff02e6428b3d34bf42b558f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ressourceType: 0
-  maxYield: 100
-  currentYield: 0
---- !u!114 &1566635040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1566635036}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbb8bbc2d57294444876a1ac8b02cf7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ressourceType: 2
-  maxYield: 50
-  currentYield: 0
+  vegetal: {fileID: 0}
+  wood: {fileID: 0}
 --- !u!1 &1598153554
 GameObject:
   m_ObjectHideFlags: 0
@@ -4195,6 +4178,7 @@ MonoBehaviour:
   citizenPrefab: {fileID: 8083089477941131043, guid: 6d3e8a1745881544e98052856baab227,
     type: 3}
   buildList: []
+  pendingCitizens: []
 --- !u!4 &1727539261
 Transform:
   m_ObjectHideFlags: 0

@@ -58,13 +58,71 @@ public class UpgradeMenu : MonoBehaviour
 
     public void MakeLumberjack()
     {
-
+        int totalWoodCost = 0;
+        foreach (GameObject u in im.selectedObjects)
+        {
+            if (u.GetComponent<AITest>().unitInfo.unitType == UnitTypes.NORMAL)
+            {
+                totalWoodCost += lumberjackCostWood;
+            }
+        }
+        if (totalWoodCost == 0 )
+        {
+            MessageDisplayer._instance.DisplayMessage("Can't upgrade units");
+            return;
+        }
+        if (totalWoodCost > GameManager._instance.wood )
+        {
+            MessageDisplayer._instance.DisplayMessage("Not enough ressources");
+        }
+        else
+        {
+            foreach (GameObject u in im.selectedObjects)
+            {
+                if (u.GetComponent<AITest>().unitInfo.unitType == UnitTypes.NORMAL)
+                {
+                    //u.GetComponent<AITest>().unitInfo = unitTypes[0];
+                    u.GetComponent<AITest>().UpgradeUnit(unitTypes[1]);
+                    GameManager._instance.GetDropPoint().GetComponent<DropPoint>().DecrementWood(lumberjackCostWood);
+                }
+            }
+        }
     }
+
 
     public void MakeGatherer()
     {
-
+        int totalVegetalCost = 0;
+        foreach (GameObject u in im.selectedObjects)
+        {
+            if (u.GetComponent<AITest>().unitInfo.unitType == UnitTypes.NORMAL)
+            {
+                totalVegetalCost += gathererCostVegetal;
+            }
+        }
+        if (totalVegetalCost == 0 )
+        {
+            MessageDisplayer._instance.DisplayMessage("Can't upgrade units");
+            return;
+        }
+        if (totalVegetalCost > GameManager._instance.vegetal )
+        {
+            MessageDisplayer._instance.DisplayMessage("Not enough ressources");
+        }
+        else
+        {
+            foreach (GameObject u in im.selectedObjects)
+            {
+                if (u.GetComponent<AITest>().unitInfo.unitType == UnitTypes.NORMAL)
+                {
+                    //u.GetComponent<AITest>().unitInfo = unitTypes[0];
+                    u.GetComponent<AITest>().UpgradeUnit(unitTypes[2]);
+                    GameManager._instance.GetDropPoint().GetComponent<DropPoint>().DecrementWood(gathererCostVegetal);
+                }
+            }
+        }
+    }
     }
 
    
-}
+

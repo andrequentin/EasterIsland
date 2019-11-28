@@ -32,6 +32,8 @@ public class Ressource : MonoBehaviour
 
     public void Consume(int value)
     {
+       // Ressource[] rs = (this.GetComponents<Ressource>());
+        
         currentYield -= value;
     }
 
@@ -49,6 +51,7 @@ public class Ressource : MonoBehaviour
     {
         if(currentYield <= 0)
         {
+        
             Destroy(this.gameObject);
         }
     }

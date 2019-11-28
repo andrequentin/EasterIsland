@@ -46,6 +46,7 @@ public class InputManager : MonoBehaviour
         if (GameManager._instance.wood >= buildingCost)
         {
             Vector2 putPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+           
             Instantiate(buildingToPut, putPosition, Quaternion.identity);
             this.buildingToPut = null;
             buildingPending = false;
