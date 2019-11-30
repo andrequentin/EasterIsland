@@ -214,7 +214,7 @@ public class InputManager : MonoBehaviour
             }
             foreach (GameObject u in selectedObjects)
             {
-                Debug.Log("ekhdem nayek");
+               
                 u.SendMessage("SetTarget", hit.transform);
 
             }

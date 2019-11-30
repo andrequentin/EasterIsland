@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager _instance;
+    private GameObject endGamePanel;
+    private bool endGamePanelDetected = false;
 
     [SerializeField]
     GameObject dropPoint;
@@ -36,25 +38,32 @@ public class GameManager : MonoBehaviour
         maxPopulation = 5;
         currentPopulation = FindObjectsOfType<AITest>().Length;
     }
-
+    
     // Update is called once per frame
     void Update()
     {
+        if(SceneManager.GetActiveScene().buildIndex == 1 && !endGamePanelDetected)
+        {
+            endGamePanel = GameObject.FindGameObjectWithTag("EndGamePanel");
+            endGamePanelDetected = true;
+            endGamePanel.SetActive(false);
+        }
+
         UpdateRessources();
 
         if(wonGame)
         {
             lostGame = false;
             Time.timeScale = 0;
-            GameObject.FindGameObjectWithTag("EndGamePanel").SetActive(true);
-            GameObject.FindGameObjectWithTag("EndGamePanel").SendMessage("SetWonPanel");
+            endGamePanel.SetActive(true);
+            endGamePanel.SendMessage("SetWonPanel");
         }
         if(lostGame)
         {
             wonGame = false;
             Time.timeScale = 0;
-            GameObject.FindGameObjectWithTag("EndGamePanel").SetActive(true);
-            GameObject.FindGameObjectWithTag("EndGamePanel").SendMessage("SetLostPanel");
+            endGamePanel.SetActive(true);
+            endGamePanel.SendMessage("SetLostPanel");
         }
     }
 

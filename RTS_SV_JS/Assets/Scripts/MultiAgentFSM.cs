@@ -61,6 +61,9 @@ public class MultiAgentFSM : MonoBehaviour
     private const string RESSOURCE_TAG = "Ressource";
     private const string DROPPOINT_TAG = "EnemyDropPoint";
 
+    private float randomMoveCounter = 0;
+    public float randomMoveDelay = 5f;
+
     void Start()
     {
         this.health = unitInfo.health;
@@ -385,6 +388,14 @@ public class MultiAgentFSM : MonoBehaviour
                 }
             }
         }
+
+        randomMoveCounter += Time.deltaTime;
+        if(randomMoveCounter >= randomMoveDelay)
+        {
+            Vector2 mv = new Vector2(Random.Range(-unitInfo.speed, unitInfo.speed), Random.Range(-unitInfo.speed, unitInfo.speed));
+            rb2d.velocity = mv.normalized;
+            randomMoveCounter = 0;
+        }
     }
 
     void ConsumeRessource(Transform target)
@@ -608,9 +619,13 @@ public class MultiAgentFSM : MonoBehaviour
 
     private void FleeState()
     {
-        MultiAgentFSM[] agents = FindObjectsOfType<MultiAgentFSM>();
-        if (agents.Length > 0)
+        List<MultiAgentFSM> agents = new List<MultiAgentFSM>();
+        agents.AddRange(FindObjectsOfType<MultiAgentFSM>());
+        agents.Remove(this);
+        
+        if (agents.Count > 0)
         {
+            
             if (/*target != null && */!target.GetComponent<MultiAgentFSM>())
             { 
                 foreach (MultiAgentFSM a in agents)
@@ -623,24 +638,37 @@ public class MultiAgentFSM : MonoBehaviour
                     }
                 }
             }
-            if (canMove && target != null)
+            /*if (canMove && target != null)
             {
                 ComputeMovement();
             }
             if (atDestination)
             {
                 rb2d.velocity = Vector2.zero;
-               
                 this.currentState = States.FIGHTING;
-              
-
-               
-            }
+            }*/
 
         }
-        else
+        else if(agents.Count <= 0 && !target.CompareTag("EnemyDropPoint"))
         {
+            //GO TO BASE
+            Debug.Log("awahwah");
+            SetTarget(GameObject.FindGameObjectWithTag("EnemyDropPoint").transform);
             
+        }
+
+        if (canMove && target != null)
+        {
+            ComputeMovement();
+        }
+        if (atDestination)
+        {
+            rb2d.velocity = Vector2.zero;
+
+            this.currentState = States.FIGHTING;
+
+
+
         }
     }
 
