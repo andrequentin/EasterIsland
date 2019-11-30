@@ -313,7 +313,10 @@ public class MultiAgentFSM : MonoBehaviour
             {
                 if (scarceRessources[1] && !scarceRessources[2])
                 {
-                    SetTarget(GetNearestRessourcePoint(RessourceTypes.ANIMAL));
+                    if (GameObject.FindGameObjectsWithTag("Prey").Length >= 3)
+                        SetTarget(GetNearestRessourcePoint(RessourceTypes.ANIMAL));
+                    else
+                        return;
                 }
                 else if (scarceRessources[2] && !scarceRessources[1])
                 {
@@ -323,7 +326,13 @@ public class MultiAgentFSM : MonoBehaviour
                 {
                     int rando = Random.Range(0, 2);
                     if (rando == 0)
-                        SetTarget(GetNearestRessourcePoint(RessourceTypes.ANIMAL));
+                    {
+                        if (GameObject.FindGameObjectsWithTag("Prey").Length >= 3)
+                            SetTarget(GetNearestRessourcePoint(RessourceTypes.ANIMAL));
+                        else
+                            return;
+                    }
+
                     if (rando == 1)
                         SetTarget(GetNearestRessourcePoint(RessourceTypes.VEGETAL));
                 }
@@ -348,7 +357,10 @@ public class MultiAgentFSM : MonoBehaviour
                         
                         break;
                     case 1:
-                        SetTarget(GetNearestRessourcePoint(RessourceTypes.ANIMAL));
+                        if (GameObject.FindGameObjectsWithTag("Prey").Length >= 3)
+                            SetTarget(GetNearestRessourcePoint(RessourceTypes.ANIMAL));
+                        else
+                            return;
                         break;
                     case 2:
                         SetTarget(GetNearestRessourcePoint(RessourceTypes.VEGETAL));
