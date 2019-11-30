@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
 
     public bool wonGame = false;
     public bool lostGame = false;
+    public bool lostGameByRessource = false;
+    private int forestCount = 0;
+    private int birdCount = 0;
     private void Awake()
     {
         if (_instance == null)
@@ -64,6 +67,19 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 0;
             endGamePanel.SetActive(true);
             endGamePanel.SendMessage("SetLostPanel");
+        }
+
+        forestCount = GameObject.FindGameObjectsWithTag("Ressource").Length;
+        birdCount = GameObject.FindGameObjectsWithTag("Prey").Length;
+
+        if(forestCount <= 0 || birdCount <= 1)
+        {
+            lostGameByRessource = true;
+            wonGame = false;
+            lostGame = false;
+            Time.timeScale = 0;
+            endGamePanel.SetActive(true);
+            endGamePanel.SendMessage("SetLostPanelByRessource");
         }
     }
 

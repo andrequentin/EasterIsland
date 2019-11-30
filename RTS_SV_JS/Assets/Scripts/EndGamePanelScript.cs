@@ -21,4 +21,10 @@ public class EndGamePanelScript : MonoBehaviour
         endGameTitle.text = "You Lose!";
         endGameParagraph.text = "Lost paragraph";
     }
+
+    public void SetLostPanelByRessource()
+    {
+        endGameTitle.text = "You lost because of ressource rarefaction!";
+        endGameParagraph.text = "Lost ressource paragraph";
+    }
 }
