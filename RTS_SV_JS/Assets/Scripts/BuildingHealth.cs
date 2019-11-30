@@ -23,7 +23,10 @@ public class BuildingHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (currentHealth <= 0)
+        {
+            Collapse();
+        }
     }
 
     public void TakeDamage(int dmg)
