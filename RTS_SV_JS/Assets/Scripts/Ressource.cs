@@ -30,11 +30,13 @@ public class Ressource : MonoBehaviour
         CheckYield();
     }
 
-    public void Consume(int value)
+    public void Consume(object[] a)
     {
-       // Ressource[] rs = (this.GetComponents<Ressource>());
-        
-        currentYield -= value;
+        // Ressource[] rs = (this.GetComponents<Ressource>());
+        if ((RessourceTypes)a[1] == ressourceType)
+        {
+            currentYield -= (int)a[0];
+        }
     }
 
     public int getYield()

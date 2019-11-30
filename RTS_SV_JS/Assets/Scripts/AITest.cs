@@ -52,8 +52,9 @@ public class AITest : MonoBehaviour
     
     private Vector2 nullVector { get { return new Vector2(-9999, -9999); } }
     public float nextWaypointDistance = 1.5f;
+    public RessourceTypes lookingFor=RessourceTypes.WOOD;
 
-    
+
     public Transform gfx;
     
 
@@ -180,34 +181,14 @@ public class AITest : MonoBehaviour
 
         if(consumeCounter >= unitInfo.gatherSpeed)
         {
-            target.SendMessage("Consume",unitInfo.gatherTick);
             if (target.GetComponent<Ressource>())
             {
 
                 if (target.GetComponent<Ressource>().getYield() <= 0) { 
                     target.GetComponent<preyAI>().Die(); this.target = null;
                 }
-                RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
 
-                switch (rt)
-                {
-                    case RessourceTypes.WOOD:
-                        this.ressourcesQuantity[0] += unitInfo.gatherTick;
-                        break;
-                    case RessourceTypes.ANIMAL:
-                        this.ressourcesQuantity[1] += unitInfo.gatherTick;
-                        break;
-                    case RessourceTypes.VEGETAL:
-                        this.ressourcesQuantity[2] += unitInfo.gatherTick;
-                        break;
-                    default:
-                        break;
-                }
-            }else if (target.GetComponent<treesRessources>())
-            {
-                RessourceTypes rt = target.GetComponent<treesRessources>().GetRessourceType();
-
-                switch (rt)
+                switch (lookingFor)
                 {
                     case RessourceTypes.WOOD:
                         this.ressourcesQuantity[0] += unitInfo.gatherTick;
@@ -222,6 +203,12 @@ public class AITest : MonoBehaviour
                         break;
                 }
             }
+            object[] a = new object[2];
+            a[0] = unitInfo.gatherTick;
+            a[1] = lookingFor;
+
+            target.SendMessage("Consume", a);
+
             consumeCounter = 0f;
         }
     }

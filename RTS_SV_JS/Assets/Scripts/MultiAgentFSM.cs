@@ -39,7 +39,7 @@ public class MultiAgentFSM : MonoBehaviour
 
     private Vector2 nullVector { get { return new Vector2(-9999, -9999); } }
     public float nextWaypointDistance = 3f;
-
+    public RessourceTypes lookingFor = RessourceTypes.WOOD;
 
     public Transform gfx;
 
@@ -395,7 +395,7 @@ public class MultiAgentFSM : MonoBehaviour
 
             if (consumeCounter >= unitInfo.gatherSpeed)
             {
-                if (target.GetComponent<Ressource>())
+                if (target.GetComponent<Ressource>().ressourceType == lookingFor)
                 {
 
                     if (target.GetComponent<Ressource>().getYield() <= 0)
@@ -403,9 +403,8 @@ public class MultiAgentFSM : MonoBehaviour
                         this.target = null;
                     }
                     
-                    RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
 
-                    switch (rt)
+                    switch (lookingFor)
                     {
                         case RessourceTypes.WOOD:
                             this.ressourcesQuantity[0] += unitInfo.gatherTick;
@@ -420,7 +419,7 @@ public class MultiAgentFSM : MonoBehaviour
                             break;
                     }
                 }
-                else if (target.GetComponent<treesRessources>())
+             /*   else if (target.GetComponent<treesRessources>())
                 {
                     RessourceTypes rt = target.GetComponent<treesRessources>().GetRessourceType();
 
@@ -438,8 +437,12 @@ public class MultiAgentFSM : MonoBehaviour
                         default:
                             break;
                     }
-                }
-                target.SendMessage("Consume", unitInfo.gatherTick);
+                }*/
+                object[] a = new object[2];
+                a[0] = unitInfo.gatherTick;
+                a[1] = lookingFor;
+
+                target.SendMessage("Consume", a);
                 consumeCounter = 0f;
             }
         }
@@ -582,6 +585,7 @@ public class MultiAgentFSM : MonoBehaviour
     private void StockState()
     {
         DropRessources(target);
+        //lookingFor = null;
         currentState = States.IDLE;
     }
 
@@ -674,7 +678,6 @@ public class MultiAgentFSM : MonoBehaviour
         if (FindObjectsOfType<Ressource>().Length > 0)
         {
             Ressource[] temp = FindObjectsOfType<Ressource>();
-            treesRessources[] temp2 = FindObjectsOfType<treesRessources>();
             List<Transform> ressourceLocation = new List<Transform>();
             for (int i = 0; i < temp.Length; i++)
             {
@@ -682,13 +685,7 @@ public class MultiAgentFSM : MonoBehaviour
                     ressourceLocation.Add(temp[i].gameObject.transform);
             }
 
-            for (int i = 0; i < temp2.Length; i++)
-            {
-                if((ressourceType == RessourceTypes.VEGETAL && RessourceTypes.VEGETAL == temp2[i].GetRessourceType()) || (ressourceType == RessourceTypes.WOOD))
-                {
-                    ressourceLocation.Add(temp2[i].gameObject.transform);
-                }
-            }
+            
             if (ressourceLocation.Count > 0)
             {
                 Transform nearestRessource = ressourceLocation[0];
@@ -704,6 +701,8 @@ public class MultiAgentFSM : MonoBehaviour
                     }
                 }
                 print(nearestRessource);
+                lookingFor = ressourceType;
+
                 return nearestRessource;
             }
             else return null;

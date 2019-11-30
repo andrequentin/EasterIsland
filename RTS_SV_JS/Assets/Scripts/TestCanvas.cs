@@ -13,9 +13,11 @@ public class TestCanvas : MonoBehaviour
     public TextMeshProUGUI populationQuantity;
     public GameObject buildMenuPanel;
     public GameObject upgradeMenuPanel;
+    public GameObject ForestMenuPanel;
     private bool isBuildPanelOpen = false;
     private bool isUpgradePanelOpen = false;
-    
+    private bool isForestPanelOpen = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +46,10 @@ public class TestCanvas : MonoBehaviour
         isUpgradePanelOpen = !isUpgradePanelOpen;
         upgradeMenuPanel.GetComponent<Animator>().SetBool("isOpen", isUpgradePanelOpen);
     }
-
+    public void ToggleForestPanel()
+    {
+        isForestPanelOpen = !isForestPanelOpen;
+        ForestMenuPanel.GetComponent<Animator>().SetBool("isOpen", isForestPanelOpen);
+    }
 
 }
