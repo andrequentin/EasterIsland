@@ -69,7 +69,7 @@ public class AITest : MonoBehaviour
 
     public bool canMove = true;
     private bool atDestination = false;
-
+    public bool grow = false;
     
     public float consumeCounter = 0f;
     public float attackCounter;
@@ -128,9 +128,16 @@ public class AITest : MonoBehaviour
         if(atDestination)
         {
             rb2d.velocity = Vector2.zero;
+           
             if(target != null && target.gameObject.tag == RESSOURCE_TAG && !isFull)
             {
-                ConsumeRessource(target);
+                if (unitInfo.unitType == UnitTypes.LUMBERJACK && grow && ressourcesQuantity[2]>=2)
+                {
+                    target.SendMessage("Grow",1);
+                    ressourcesQuantity[2] -= 2;
+                }else {
+                    ConsumeRessource(target);
+                }
             }
 
             else if(target != null && target.gameObject.tag == DROPPOINT_TAG)

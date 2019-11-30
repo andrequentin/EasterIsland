@@ -18,7 +18,7 @@ public class InputManager : MonoBehaviour
     public GameObject selectedObject;
     public List<GameObject> selectedObjects;
     private GameObject[] units;
-  
+
     [SerializeField]
     private GameObject goToObject;
     private Rect selectBox;
@@ -28,6 +28,7 @@ public class InputManager : MonoBehaviour
     private Texture boxTexture;
     private bool buildSelected = false;
     private bool upgradeSelected = false;
+    private bool forestSelected = false;
     GameObject buildingToPut = null;
     bool buildingPending = false;
     int buildingCost;
@@ -72,48 +73,51 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.I))
         {
             ToggleInfoPanel();
         }
 
-        if(Input.GetKeyDown(KeyCode.U))
-        {    
+        if (Input.GetKeyDown(KeyCode.U))
+        {
             upgradeSelected = true;
             GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleUpgradePanel");
         }
 
-        if(Input.GetMouseButtonDown(0) && !buildingPending)
+        if (Input.GetMouseButtonDown(0) && !buildingPending)
         {
             if (!EventSystem.current.IsPointerOverGameObject())
                 LeftClick();
         }
-        else if(Input.GetMouseButtonDown(0) && buildingPending)
+        else if (Input.GetMouseButtonDown(0) && buildingPending)
         {
             PutBuilding();
         }
 
-        if(Input.GetMouseButton(0) && boxStartingPosition == Vector2.zero)
+        if (Input.GetMouseButton(0) && boxStartingPosition == Vector2.zero)
         {
             isMultiSelecting = true;
             boxStartingPosition = Input.mousePosition;
         }
-        else if(Input.GetMouseButton(0) && boxStartingPosition != Vector2.zero)
+        else if (Input.GetMouseButton(0) && boxStartingPosition != Vector2.zero)
         {
             boxEndingPosition = Input.mousePosition;
         }
 
-        if(Input.GetMouseButtonUp(0) && !buildingPending)
+        if (Input.GetMouseButtonUp(0) && !buildingPending)
         {
             units = GameObject.FindGameObjectsWithTag(SELECTABLE_TAG);
             MultiSelect();
             isMultiSelecting = false;
         }
 
-        if(selectedObjects.Count > 0  && Input.GetMouseButtonDown(1))
+        if (selectedObjects.Count > 0 && Input.GetMouseButtonDown(1))
         {
             RightClick();
         }
+
+    
+        
 
         selectBox = new Rect(boxStartingPosition.x,Screen.height - boxStartingPosition.y, boxEndingPosition.x - boxStartingPosition.x, -1 * ((Screen.height - boxStartingPosition.y) - (Screen.height - boxEndingPosition.y)));
     }
@@ -150,6 +154,11 @@ public class InputManager : MonoBehaviour
             {
                 buildSelected = false;
                 GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleBuildPanel");
+            }
+            if (forestSelected)
+            {
+                forestSelected = false;
+                GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleForestPanel");
             }
             //selectedObject = hit.collider.gameObject;
             if (!selectedObjects.Contains(hit.collider.gameObject))
@@ -211,6 +220,7 @@ public class InputManager : MonoBehaviour
             if(hit.transform.tag == RESSOURCE_TAG )
             {
                 GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleForestPanel");
+                forestSelected = true;
             }
             foreach (GameObject u in selectedObjects)
             {

@@ -17,6 +17,7 @@ public class Ressource : MonoBehaviour
     public RessourceTypes ressourceType;
     public int maxYield;
     public int currentYield;
+    public float time = 0.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,14 +27,31 @@ public class Ressource : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Mathf.Clamp(currentYield,0,maxYield);
-        CheckYield();
-    }
+        if (ressourceType == RessourceTypes.WOOD || ressourceType == RessourceTypes.VEGETAL)
+        {
+            time += Time.deltaTime;
+        }
+        if (time >= 1.0f && currentYield<maxYield)
+        {
+            time = 0.0f;
+            currentYield++;
+        }
 
+        Mathf.Clamp(currentYield, 0, maxYield);
+        CheckYield();
+    }   
+    public void Grow(int g)
+    {
+
+        if (ressourceType == RessourceTypes.WOOD)
+        {
+            maxYield += g;
+        }
+    }
     public void Consume(object[] a)
     {
         // Ressource[] rs = (this.GetComponents<Ressource>());
-        if ((RessourceTypes)a[1] == ressourceType)
+        if ((RessourceTypes)a[1] == ressourceType && currentYield>0)
         {
             currentYield -= (int)a[0];
         }
@@ -56,7 +74,16 @@ public class Ressource : MonoBehaviour
 
     private void CheckYield()
     {
-        if(currentYield <= 0)
+        Ressource[] s = gameObject.GetComponents<Ressource>();
+        bool destroy = true;
+        foreach (Ressource r in s)
+        {
+            if(r.currentYield > 0)
+            {
+                destroy = false;
+            }
+        }
+        if (destroy)
         {
         
             Destroy(this.gameObject);

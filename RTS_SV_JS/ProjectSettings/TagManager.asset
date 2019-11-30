@@ -20,6 +20,7 @@ TagManager:
   - Input
   - PlayerBuilding
   - EndGamePanel
+  - growbutton
   layers:
   - Default
   - TransparentFX

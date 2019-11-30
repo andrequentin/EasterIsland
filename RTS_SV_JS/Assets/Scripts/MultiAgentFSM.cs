@@ -305,7 +305,7 @@ public class MultiAgentFSM : MonoBehaviour
             {
                 if (scarceRessources[0])
                 {
-                    SetTarget(GetNearestRessourcePoint(RessourceTypes.WOOD));
+                    SetTarget(GetNearestRessourcePoint(RessourceTypes.VEGETAL));
                 }
             }
 
@@ -430,31 +430,22 @@ public class MultiAgentFSM : MonoBehaviour
                             break;
                     }
                 }
-             /*   else if (target.GetComponent<treesRessources>())
-                {
-                    RessourceTypes rt = target.GetComponent<treesRessources>().GetRessourceType();
-
-                    switch (rt)
-                    {
-                        case RessourceTypes.WOOD:
-                            this.ressourcesQuantity[0] += unitInfo.gatherTick;
-                            break;
-                        case RessourceTypes.ANIMAL:
-                            this.ressourcesQuantity[1] += unitInfo.gatherTick;
-                            break;
-                        case RessourceTypes.VEGETAL:
-                            this.ressourcesQuantity[2] += unitInfo.gatherTick;
-                            break;
-                        default:
-                            break;
-                    }
-                }*/
                 object[] a = new object[2];
                 a[0] = unitInfo.gatherTick;
                 a[1] = lookingFor;
 
                 target.SendMessage("Consume", a);
                 consumeCounter = 0f;
+            }
+        }
+        if (isFull && unitInfo.unitType == UnitTypes.LUMBERJACK)
+        {
+            if (ressourcesQuantity[2] >= 2)
+            {
+                int v = ressourcesQuantity[2];
+                target.SendMessage("Grow", v / 2);
+                ressourcesQuantity[2] -= v;
+                lookingFor = RessourceTypes.WOOD;
             }
         }
     }
