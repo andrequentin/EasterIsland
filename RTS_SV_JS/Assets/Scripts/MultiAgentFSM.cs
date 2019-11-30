@@ -11,7 +11,8 @@ public enum States
     GATHERING,
     STOCKING,
     FIGHTING,
-    BUILDING
+    BUILDING,
+    FLEE
 }
 public class MultiAgentFSM : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class MultiAgentFSM : MonoBehaviour
     private bool isFull = false;
     private int[] ressourcesQuantity = new int[3];
 
-    private float detectionRange;
+    private float detectionRange = 8f;
 
     private bool isBeingAttacked = false;
 
@@ -55,6 +56,8 @@ public class MultiAgentFSM : MonoBehaviour
     public float attackCounter = 0f;
     public float buildCounter = 0f;
 
+    public float range = 1.5f;
+
     private const string RESSOURCE_TAG = "Ressource";
     private const string DROPPOINT_TAG = "EnemyDropPoint";
 
@@ -67,6 +70,7 @@ public class MultiAgentFSM : MonoBehaviour
         seeker = GetComponent<Seeker>();
         destination = nullVector;
         oldDestination = nullVector;
+        //CancelInvoke("UpdatePath");
         InvokeRepeating("UpdatePath", 0f, 0.5f);
         
     }
@@ -138,7 +142,7 @@ public class MultiAgentFSM : MonoBehaviour
         {
             currentWaypoint++;
         }
-        rb2d.velocity.Normalize();
+        //rb2d.velocity.Normalize();
 
     }
 
@@ -162,14 +166,16 @@ public class MultiAgentFSM : MonoBehaviour
             atDestination = false;
             canMove = true;
         }
-
+        CancelInvoke("UpdatePath");
         InvokeRepeating("UpdatePath", 0f, 0.5f);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-
+        if (target == null)
+            this.currentState = States.IDLE;
+        attackCounter += Time.deltaTime;
         //Reset being attacked after 10 seconds
         if(isBeingAttacked)
         {
@@ -189,49 +195,53 @@ public class MultiAgentFSM : MonoBehaviour
                 IdleState();
                 if (EasyAI._instance.buildList.Count > 0)
                 {
-                    this.currentState = States.BUILDING;
+                    //this.currentState = States.BUILDING;
                     SetTarget(EasyAI._instance.buildList[0].transform);
                 }
                 break;
 
             case States.MOVING:
                 MovingState();
-                if (EasyAI._instance.buildList.Count > 0)
+                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable"))
                 {
-                    this.currentState = States.BUILDING;
+                    //this.currentState = States.BUILDING;
                     SetTarget(EasyAI._instance.buildList[0].transform);
                 }
                 break;
 
             case States.GATHERING:
                 GatherState();
-                if (EasyAI._instance.buildList.Count > 0)
+                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable"))
                 {
-                    this.currentState = States.BUILDING;
+                    //this.currentState = States.BUILDING;
                     SetTarget(EasyAI._instance.buildList[0].transform);
                 }
                 break;
 
             case States.STOCKING:
                 StockState();
-                if (EasyAI._instance.buildList.Count > 0)
+                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable"))
                 {
-                    this.currentState = States.BUILDING;
+                    //this.currentState = States.BUILDING;
                     SetTarget(EasyAI._instance.buildList[0].transform);
                 }
                 break;
 
             case States.FIGHTING:
                 FightState();
-                if (EasyAI._instance.buildList.Count > 0)
+                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable"))
                 {
-                    this.currentState = States.BUILDING;
+                    //this.currentState = States.BUILDING;
                     SetTarget(EasyAI._instance.buildList[0].transform);
                 }
                 break;
 
             case States.BUILDING:
                 BuildState();
+                break;
+
+            case States.FLEE:
+                FleeState();
                 break;
 
         }
@@ -242,22 +252,47 @@ public class MultiAgentFSM : MonoBehaviour
 
     private void BuildState()
     {
-        buildCounter += Time.deltaTime;
-        if (buildCounter >= 3f)
-        {
-            target.SendMessage("BuildMe", this.unitInfo.buildPower);
-            if (target.GetComponent<Buildable>().GetBuildValue() >= target.GetComponent<Buildable>().GetMaxBuild())
+        if (IsTargetInRange())
+        { 
+            buildCounter += Time.deltaTime;
+            if (buildCounter >= 3f)
             {
-                this.target = null;
-                this.currentState = States.IDLE;
-                EasyAI._instance.RemoveFirstFoundationFromList();
+                target.SendMessage("BuildMe", this.unitInfo.buildPower);
+                if (target.GetComponent<Buildable>().GetBuildValue() >= target.GetComponent<Buildable>().GetMaxBuild())
+                {
+                    this.target = null;
+                    this.currentState = States.IDLE;
+                    EasyAI._instance.RemoveFirstFoundationFromList();
+                }
+                buildCounter = 0f;
             }
-            buildCounter = 0f;
+        }
+        else if(!IsTargetInRange())
+        {
+            reachedEndOfPath = false;
+            atDestination = false;
+            canMove = true;
+            
+            currentState = States.MOVING;
+            CancelInvoke("UpdatePath");
+            InvokeRepeating("UpdatePath", 0f, 0.5f);
+        }
+
+        if (this.unitInfo.unitType == UnitTypes.NORMAL || this.unitInfo.unitType == UnitTypes.LUMBERJACK || this.unitInfo.unitType == UnitTypes.GATHERER)
+        {
+            if (isBeingAttacked)
+            {
+                this.currentState = States.FIGHTING;
+
+
+            }
+
         }
     }
 
     private void IdleState()
     {
+        SetTarget(null);
         //Ressource Checking
         scarceRessources = EasyAI._instance.GetScarceRessource();
         if (CheckScarceRessource())
@@ -302,7 +337,7 @@ public class MultiAgentFSM : MonoBehaviour
                     temp = Random.Range(0, scarceRessources.Length);
                     tempBool = scarceRessources[temp];
                 }
-                temp = 0;
+                
                 switch(temp)
                 {
                     case 0:
@@ -331,8 +366,9 @@ public class MultiAgentFSM : MonoBehaviour
             {
                 this.currentState = States.FIGHTING;
 
-                //run when low hp
+              
             }
+         
         }
     
         //if warrior, detect ennemies and fight till the end 
@@ -363,9 +399,10 @@ public class MultiAgentFSM : MonoBehaviour
                 {
 
                     if (target.GetComponent<Ressource>().getYield() <= 0)
-                    {
-                        target.GetComponent<preyAI>().Die(); this.target = null;
+                    {  
+                        this.target = null;
                     }
+                    
                     RessourceTypes rt = target.GetComponent<Ressource>().GetRessourceType();
 
                     switch (rt)
@@ -428,6 +465,7 @@ public class MultiAgentFSM : MonoBehaviour
         }
         if(atDestination)
         {
+            rb2d.velocity = Vector2.zero;
             if (target != null && target.gameObject.tag == RESSOURCE_TAG && !isFull)
             {
                 this.currentState = States.GATHERING;
@@ -442,17 +480,103 @@ public class MultiAgentFSM : MonoBehaviour
             {
                 this.currentState = States.FIGHTING;
             }
+            else if(target != null && target.gameObject.CompareTag("Prey"))
+            {
+                this.currentState = States.GATHERING;
+            }
+            else if(target != null && target.gameObject.CompareTag("EnemyBuildable"))
+            {
+                this.currentState = States.BUILDING;
+            }
+        }
+
+        if (this.unitInfo.unitType == UnitTypes.NORMAL || this.unitInfo.unitType == UnitTypes.LUMBERJACK || this.unitInfo.unitType == UnitTypes.GATHERER)
+        {
+            if (isBeingAttacked)
+            {
+                this.currentState = States.FIGHTING;
+
+
+            }
+
         }
     }
 
     private void GatherState()
     {
-        ConsumeRessource(target);
+        
+        if(target.gameObject.CompareTag("Prey"))
+        {
+            if (target.GetComponent<preyAI>().GetHealth() >= 0)
+            {
+                AttackTarget(target);
+            }
+            else if(target.GetComponent<preyAI>().GetHealth() < 0)
+            {
+                ressourcesQuantity[1] += target.GetComponent<Ressource>().GetAnimalYield();
+                target.GetComponent<preyAI>().Die();
+                target = null;
+                
+            }
+        }
+        else
+            ConsumeRessource(target);
+
+
         if(isFull)
         {
             SetTarget(GameObject.FindGameObjectWithTag(DROPPOINT_TAG).gameObject.transform);
             this.currentState = States.MOVING;
         }
+
+        if (this.unitInfo.unitType == UnitTypes.NORMAL || this.unitInfo.unitType == UnitTypes.LUMBERJACK || this.unitInfo.unitType == UnitTypes.GATHERER)
+        {
+            if (isBeingAttacked)
+            {
+                this.currentState = States.FIGHTING;
+
+
+            }
+
+        }
+
+
+    }
+
+    private void AttackTarget(Transform target)
+    {
+        if (IsTargetInRange())
+        {
+            if (attackCounter >= unitInfo.attackSpeed)
+            {
+                target.SendMessage("TakeDamage", unitInfo.damage);
+                if (target.CompareTag("Selectable") && target.GetComponent<AITest>().GetHealth() <= 0)
+                    this.target = null;
+                else if (target.CompareTag("PlayerBuilding") && target.GetComponent<BuildingHealth>().GetCurrentHealth() <= 0)
+                    this.target = null;
+                else if (target.CompareTag("Prey") && target.GetComponent<preyAI>().GetHealth() <= 0)
+                {
+                    ConsumeRessource(target);
+                }
+                attackCounter = 0f;
+            }
+        }
+
+        else if (!IsTargetInRange())
+        {
+            reachedEndOfPath = false;
+            atDestination = false;
+            canMove = true;
+            Debug.Log("Target gone far");
+            currentState = States.MOVING;
+            CancelInvoke("UpdatePath");
+            InvokeRepeating("UpdatePath", 0f, 0.5f);
+        }
+    }
+
+    private bool IsTargetInRange()
+    {
+        return (Vector2.Distance(this.transform.position, target.position) <= range);
     }
 
     private void StockState()
@@ -463,7 +587,57 @@ public class MultiAgentFSM : MonoBehaviour
 
     private void FightState()
     {
+        if(this.unitInfo.unitType == UnitTypes.WARRIOR)
+        {
+            AttackTarget(target);
+        }
+        else
+        {
+            AttackTarget(target);
+            if(health <= 8)
+            {
+                this.currentState = States.FLEE;
+            }
 
+        }
+    }
+
+    private void FleeState()
+    {
+        MultiAgentFSM[] agents = FindObjectsOfType<MultiAgentFSM>();
+        if (agents.Length > 0)
+        {
+            if (/*target != null && */!target.GetComponent<MultiAgentFSM>())
+            { 
+                foreach (MultiAgentFSM a in agents)
+                {
+                    if (a.unitInfo.unitType == UnitTypes.WARRIOR)
+                    {
+                        SetTarget(a.gameObject.transform);
+                        //this.currentState = States.MOVING;
+                        break;
+                    }
+                }
+            }
+            if (canMove && target != null)
+            {
+                ComputeMovement();
+            }
+            if (atDestination)
+            {
+                rb2d.velocity = Vector2.zero;
+               
+                this.currentState = States.FIGHTING;
+              
+
+               
+            }
+
+        }
+        else
+        {
+            
+        }
     }
 
     public void TakeDamage(int dmg)
@@ -515,21 +689,24 @@ public class MultiAgentFSM : MonoBehaviour
                     ressourceLocation.Add(temp2[i].gameObject.transform);
                 }
             }
-            
-            Transform nearestRessource = ressourceLocation[0];
-            float nearestDistance = Vector2.Distance(this.gameObject.transform.position, nearestRessource.position);
-
-            foreach (Transform r in nearestRessource)
+            if (ressourceLocation.Count > 0)
             {
-                float tempDistance = Vector2.Distance(this.gameObject.transform.position, r.position);
-                if (tempDistance < nearestDistance)
+                Transform nearestRessource = ressourceLocation[0];
+                float nearestDistance = Vector2.Distance(this.gameObject.transform.position, nearestRessource.position);
+
+                foreach (Transform r in nearestRessource)
                 {
-                    nearestDistance = tempDistance;
-                    nearestRessource = r.gameObject.transform;
+                    float tempDistance = Vector2.Distance(this.gameObject.transform.position, r.position);
+                    if (tempDistance < nearestDistance)
+                    {
+                        nearestDistance = tempDistance;
+                        nearestRessource = r.gameObject.transform;
+                    }
                 }
+                print(nearestRessource);
+                return nearestRessource;
             }
-            print(nearestRessource);
-            return nearestRessource;
+            else return null;
         }
         else return null;
     }

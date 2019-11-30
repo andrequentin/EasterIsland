@@ -13,6 +13,7 @@ public class InputManager : MonoBehaviour
     private const string PREY_TAG = "Prey";
     private const string BUILDABLE_TAG = "Buildable";
     private const string ENEMYBUILDING_TAG = "EnemyBuilding";
+    private const string ENEMYNEXUS_TAG = "EnemyDropPoint";
     private bool isMultiSelecting = false;
     public GameObject selectedObject;
     public List<GameObject> selectedObjects;
@@ -151,8 +152,11 @@ public class InputManager : MonoBehaviour
                 GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleBuildPanel");
             }
             //selectedObject = hit.collider.gameObject;
-            hit.collider.gameObject.SendMessage("ToggleSelected");
-            selectedObjects.Add(hit.collider.gameObject);
+            if (!selectedObjects.Contains(hit.collider.gameObject))
+            {
+                hit.collider.gameObject.SendMessage("ToggleSelected");
+                selectedObjects.Add(hit.collider.gameObject);
+            }
             /*if (!hit.collider.gameObject.GetComponent<AITest>().IsSelected())
                 selectedObjects.Add(hit.collider.gameObject);
             else
@@ -201,12 +205,12 @@ public class InputManager : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(origin, -Vector2.up);
         Debug.Log(origin);
         Debug.Log(hit.collider.gameObject);
-        if(hit.collider != null && !hit.collider.CompareTag(GROUND_TAG) && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == BUILDABLE_TAG || hit.transform.tag == ENEMYBUILDING_TAG || hit.transform.tag == DROPPOINT_TAG || hit.transform.tag == ENEMY_TAG || hit.transform.tag == PREY_TAG))
+        if(hit.collider != null && !hit.collider.CompareTag(GROUND_TAG) && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == BUILDABLE_TAG || hit.transform.tag == ENEMYBUILDING_TAG || hit.transform.tag == DROPPOINT_TAG || hit.transform.tag == ENEMYNEXUS_TAG || hit.transform.tag == ENEMY_TAG || hit.transform.tag == PREY_TAG))
         {
             //selectedObject.SendMessage("SetTarget", hit.transform);
             foreach(GameObject u in selectedObjects)
             {
-                
+                Debug.Log("ekhdem nayek");
                 u.SendMessage("SetTarget", hit.transform);
 
             }

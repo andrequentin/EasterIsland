@@ -18,6 +18,8 @@ TagManager:
   - EnemyBuilding
   - Prey
   - Input
+  - PlayerBuilding
+  - EndGamePanel
   layers:
   - Default
   - TransparentFX

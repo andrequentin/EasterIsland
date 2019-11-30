@@ -23,7 +23,14 @@ public class EasyAI : MonoBehaviour
 
     [SerializeField]
     private GameObject houseFoundation;
+    [SerializeField]
+    private GameObject sawMillFoundation;
+    [SerializeField]
+    private GameObject granaryFoundation;
+
     private int houseCost = 20;
+    private int sawMillCost = 30;
+    private int granaryCost = 30;
 
     [SerializeField]
     private GameObject citizenPrefab;
@@ -69,8 +76,13 @@ public class EasyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        currentPopulation =  FindObjectsOfType<MultiAgentFSM>().Length;
+
         BrainWork();
+        if (Input.GetKeyDown(KeyCode.G))
+            BuildGranary();
+        if (Input.GetKeyDown(KeyCode.H))
+            BuildSawmill();
 
     }
 
@@ -107,14 +119,16 @@ public class EasyAI : MonoBehaviour
             BuildHouse();
        }
 
-       if(this.AIDropPoint.GetWood() >= this.AIDropPoint.GetMaxWood())
+       if(this.AIDropPoint.GetWood() >= this.AIDropPoint.GetMaxWood() - 10)
         {
             //Build sawmill
+            BuildSawmill();
         }
 
-        if (this.AIDropPoint.GetAnimal() >= this.AIDropPoint.GetMaxAnimal() || this.AIDropPoint.GetVegetal() >= this.AIDropPoint.GetMaxVegetal())
+        if (this.AIDropPoint.GetAnimal() >= (this.AIDropPoint.GetMaxAnimal() - 10) || this.AIDropPoint.GetVegetal() >= (this.AIDropPoint.GetMaxVegetal() - 10))
         {
             //Build granary
+            BuildGranary();
         }
 
        if(this.AIDropPoint.GetAnimal() >= citizenCost)
@@ -218,6 +232,23 @@ public class EasyAI : MonoBehaviour
         this.AIDropPoint.DecrementWood(houseCost);
         this.currentBuildSlot.x += 2.5f;
         this.buildList.Add(temp);
+    }
+
+    private void BuildSawmill()
+    {
+        GameObject temp = Instantiate(sawMillFoundation, currentBuildSlot, Quaternion.identity);
+        this.AIDropPoint.DecrementWood(sawMillCost);
+        this.currentBuildSlot.x += 2.5f;
+        this.buildList.Add(temp);
+    }
+
+    private void BuildGranary()
+    {
+        GameObject temp = Instantiate(granaryFoundation, currentBuildSlot, Quaternion.identity);
+        this.AIDropPoint.DecrementWood(granaryCost);
+        this.currentBuildSlot.x += 2.5f;
+        this.buildList.Add(temp);
+
     }
 
     public void RemoveFirstFoundationFromList()

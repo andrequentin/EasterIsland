@@ -43,7 +43,7 @@ public class AITest : MonoBehaviour
     private const string POSITION_TAG = "Position";
     private const string BUILDABLE_TAG = "Buildable";
     private const string ENEMYBUILDING_TAG = "EnemyBuilding";
-
+    private const string ENEMYNEXUS_TAG = "EnemyDropPoint";
     private Rigidbody2D rb2d;
     public Transform target;
     public Transform oldTarget;
@@ -87,7 +87,7 @@ public class AITest : MonoBehaviour
         this.health = unitInfo.health;
         attackCounter = unitInfo.attackSpeed;
         consumeCounter = unitInfo.gatherSpeed;
-        
+        this.gfx.GetComponent<SpriteRenderer>().sprite = unitInfo.sprite;
     }
 
     void UpdatePath()
@@ -158,6 +158,10 @@ public class AITest : MonoBehaviour
             else if(target != null && target.gameObject.tag == BUILDABLE_TAG)
             {
                 BuildTarget(target);
+            }
+            else if(target != null && target.gameObject.tag == ENEMYNEXUS_TAG)
+            {
+                AttackTarget(target);
             }
             else if(destination != nullVector)
             { 
@@ -243,6 +247,10 @@ public class AITest : MonoBehaviour
         {
             if (attackCounter >= unitInfo.attackSpeed)
             {
+                if(target.CompareTag(ENEMY_TAG))
+                {
+                    target.GetComponent<MultiAgentFSM>().SetTarget(this.gameObject.transform);
+                }
                 target.SendMessage("TakeDamage", unitInfo.damage);
                 if (target.CompareTag(ENEMY_TAG) && target.GetComponent<MultiAgentFSM>().GetCurrentHealth() <= 0)
                     this.target = null;
@@ -498,5 +506,21 @@ public class AITest : MonoBehaviour
         attackCounter = unitInfo.attackSpeed;
         consumeCounter = unitInfo.gatherSpeed;
         gfx.GetComponent<SpriteRenderer>().sprite = unitInfo.sprite;
+    }
+
+    public void TakeDamage(int dmg)
+    {
+       
+        this.health -= dmg;
+        if (this.health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        GameManager._instance.currentPopulation--;
+        Destroy(this.gameObject);
     }
 }

@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
     public int vegetal;
     public int maxPopulation;
     public int currentPopulation;
+
+    public bool wonGame = false;
+    public bool lostGame = false;
     private void Awake()
     {
         if (_instance == null)
@@ -38,6 +41,21 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         UpdateRessources();
+
+        if(wonGame)
+        {
+            lostGame = false;
+            Time.timeScale = 0;
+            GameObject.FindGameObjectWithTag("EndGamePanel").SetActive(true);
+            GameObject.FindGameObjectWithTag("EndGamePanel").SendMessage("SetWonPanel");
+        }
+        if(lostGame)
+        {
+            wonGame = false;
+            Time.timeScale = 0;
+            GameObject.FindGameObjectWithTag("EndGamePanel").SetActive(true);
+            GameObject.FindGameObjectWithTag("EndGamePanel").SendMessage("SetLostPanel");
+        }
     }
 
     private void UpdateRessources()

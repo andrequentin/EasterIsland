@@ -10,7 +10,10 @@ public class BuildingHealth : MonoBehaviour
     [SerializeField]
     private int maxHealth;
 
-    private int currentHealth;
+    [SerializeField]
+    private bool isNexus;
+
+    public int currentHealth;
     // Start is called before the first frame update
     void Start()
     {
@@ -67,6 +70,13 @@ public class BuildingHealth : MonoBehaviour
             }
         }
         //Else if for the other buildings
+        else if(isNexus)
+        {
+            if (isEnemy)
+                GameManager._instance.wonGame = true;
+            else
+                GameManager._instance.lostGame = true;
+        }
         Destroy(this.gameObject);
     }
 

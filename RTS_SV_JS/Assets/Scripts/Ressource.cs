@@ -42,6 +42,11 @@ public class Ressource : MonoBehaviour
         return this.currentYield;
     }
 
+    public int GetAnimalYield()
+    {
+        return this.maxYield;
+    }
+
     public RessourceTypes GetRessourceType()
     {
         return this.ressourceType;
