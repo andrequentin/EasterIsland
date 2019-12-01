@@ -46,7 +46,7 @@ public class EasyAI : MonoBehaviour
     public List<GameObject> buildList = new List<GameObject>();
     public List<GameObject> pendingCitizens = new List<GameObject>();
 
-    private Vector3 citizenSpawnPosition = new Vector3(-17, 20, -1);
+    private Vector3 citizenSpawnPosition = new Vector3(-90, 95, -1);
 
     //Increment this variable modulo 3 to determine what citizen we gonna create, 0 for warrior, 1 for lumber and 2 for gatherer
     private int citizenCounter = 0;

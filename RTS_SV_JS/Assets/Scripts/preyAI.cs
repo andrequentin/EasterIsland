@@ -142,7 +142,7 @@ public class preyAI : MonoBehaviour
                         hasMate = false;
                         mate = null;
 
-                        if (GameObject.FindGameObjectsWithTag("Prey").Length < 100)
+                        if (GameObject.FindGameObjectsWithTag("Prey").Length < 40)
                         {
                             Vector3 pos = this.transform.position;
                             pos.z = -1;

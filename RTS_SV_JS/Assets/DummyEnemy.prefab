@@ -116,12 +116,15 @@ MonoBehaviour:
   oldTarget: {fileID: 0}
   destination: {x: 0, y: 0}
   oldDestination: {x: 0, y: 0}
-  nextWaypointDistance: 1
+  nextWaypointDistance: 1.5
+  lookingFor: 0
   gfx: {fileID: 8083089478206583531}
   canMove: 1
   consumeCounter: 0
   attackCounter: 0
   buildCounter: 0
+  range: 1.5
+  randomMoveDelay: 5
 --- !u!1 &8083089478206583532
 GameObject:
   m_ObjectHideFlags: 0

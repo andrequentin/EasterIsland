@@ -5249,7 +5249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAAAIIeyLzDbhTgIAAPMEAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VEtz2jAQ/iuMzqVjHiGltxYI6YEkE9rJxZdFXmMNsuTRI0Ay/PdqZTt26PTEst+3u98+5HcmlK2QO23WRmQbnSH7PmBksy+DDrzHE+y12oo3bDkvInMFkSBynsEJHfwjCrO6RGcE/6H2kshJcHolcm3KVbbHhbbOBncO0mKAjHYUrYLrfcBO4Wc4p5BzsMa3ZL0Fa54MLsHkqByajtoSW1rN8opLKCvMSHJHHifTNm8yjUQV2mk4JJ1rKYVttDB3rmKv26pAg9RsJiC0FusTvUCxLxyl68c+5rlF12gycF4KEyZUJ2U/dT22EuyhFvYK0lOZ8c0sSqqTbv7Bh6MI50aX923dUUI1XCH44RnOHKzrzbXvXn4W7tUR5AF2El8KVA96bbRXWQCd8RTqLY6X3d+P1hYF8kPnr6VeOX31/+1QD5fY/WkhRbkj6Ou0dmyljuOOu0cTFvMrCI6XQdcymtVukvHH4m/Y92+oAe6EsS5ATZuK9O20N0Rlqzg0ase7hTYKo7tRXaEC6c5PIY273uEV1it7hdwBvZameIO1j+AqJLo7fpJcQU/6+LEtW+jjBm3x6J0UCjvRBDyEQS20UvWJ9WfShm29yYH3wvZeZJ9vi01yPoFvSQLjyZjfzGCY75IcEz4DmCd4O+IsHp9QoU+QT7XQZjxhbapLrsKhtR+RwdpAFc89M3Bci7dS90YuVK633CCqx08ZLJpQIzzKbJWJMJ8tOidUXDd7T5nU/IBZ+sFPY6OrkzOQdt2nrBKv2pEnZYv40UjZhV3+AlBLAwQUAAAICAAACCHsDjhyGW0AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9IzNNBRUEovSizIKAaKGII4pZkpIHa0knFasnGihYFBopGxUbKpWaJuWpJBWqpBsllioqVBqrlhslIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAACCHsi8w24U4CAADzBAAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAACCHsDjhyGW0AAAB4AAAACQAkAAAAAAAAAAAAAACbAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAFMDAAAAAA==
+    dataString: UEsDBBQAAAgIAAAIIexNcS7CSgIAAPMEAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VMuS2jAQ/BVK55AyENiQWwIsmwMLtWxqL74M8hirkCWXHsur+PdIso2NUzkhuntGPQ/5SpjQBVIj1VKxZCUTJD96xJ/Jl15DvuAJ9lJs2QVrzQdLTOZFEDRvYJh0+MCHaZmjUYz+FHvuxZEDrWCpVPki2eNMaqMdnALX6CgljY8WDrr2yMn99Kc+5OxOwyd/urjTNOrd3JGiMKgaaS2sZaXKCsohLzDxlhvxcHzPOy6FwpVTabx1KjlnuvJCzLkItW6LDBX6YhMGrrRwv5dnyPaZ8enases01WgqTwrOc6Zch8qk5Jcs25aDPpTGPoFbDJYmwVKZdPUP3x8EOlUyf6nvHUT+DpMxeniDMwVtWn1tw/NH41YcgR9gx/EjQ/Eql0pakTjSKOtDrcbhvPl7L22WIT00eGm1A9ri/9PxNdxC9acZZ/nOU1+/lcCWy9DuMHtUbjC/neGwGX5bBpMS9jb+aHyHfXuHKuKZKW0cVZUpvL+dtMpLySI0zZdjzUwqgQGuXBcogJvzxqUx3Rl2uNa1HeYZ/GupLq+4+hF0QgLc6KOoQ23k8T4tncnjCnW2toYzgY1pT7y6Rs2kEOWKtXtSh22tSoG2wvaWJY+7RUYpHcH3KILhaEjHE+inuyjFiE4AphE+DSgJy8eEqxP4pjRatceNTTTJhVu0+iPSWyoowronCo5Ldsllq+VMpHJLFaJYP2TQqNwd7lEmi4S5/mzRGCbCuMk1JlzSAybxXR+HQhcnoyBuqo9JwT6l8UhMZuGjEZMbuf0FUEsDBBQAAAgIAAAIIewOOHIZbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM00FFQSi9KLMgoBooYgjilmSkgdrSScVqycaKFgUGikbFRsqlZom5akkFaqkGyWWKipUGquWGyUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAAAIIexNcS7CSgIAAPMEAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAAAIIewOOHIZbQAAAHgAAAAJACQAAAAAAAAAAAAAAJcCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAATwMAAAAA
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -6271,6 +6271,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 4ff6811833552cc47bf0928dadd93cac,
         type: 2}
+    - target: {fileID: 8083089477941131042, guid: 6d3e8a1745881544e98052856baab227,
+        type: 3}
+      propertyPath: nextWaypointDistance
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d3e8a1745881544e98052856baab227, type: 3}
 --- !u!1 &867753306
@@ -6694,6 +6699,16 @@ PrefabInstance:
       propertyPath: isMale
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7332008847740407035, guid: cea44c0bcfca5364fae1164ae7b89dd3,
+        type: 3}
+      propertyPath: maxYield
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7332008847740407035, guid: cea44c0bcfca5364fae1164ae7b89dd3,
+        type: 3}
+      propertyPath: currentYield
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7332008846911927213, guid: cea44c0bcfca5364fae1164ae7b89dd3,
         type: 3}
       propertyPath: m_Color.r
@@ -6708,16 +6723,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7332008847740407035, guid: cea44c0bcfca5364fae1164ae7b89dd3,
-        type: 3}
-      propertyPath: maxYield
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7332008847740407035, guid: cea44c0bcfca5364fae1164ae7b89dd3,
-        type: 3}
-      propertyPath: currentYield
-      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cea44c0bcfca5364fae1164ae7b89dd3, type: 3}

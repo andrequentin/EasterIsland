@@ -38,7 +38,7 @@ public class MultiAgentFSM : MonoBehaviour
     float beingAttackedResetCounter = 0;
 
     private Vector2 nullVector { get { return new Vector2(-9999, -9999); } }
-    public float nextWaypointDistance = 3f;
+    public float nextWaypointDistance = 1.5f;
     public RessourceTypes lookingFor = RessourceTypes.WOOD;
 
     public Transform gfx;
@@ -145,7 +145,7 @@ public class MultiAgentFSM : MonoBehaviour
         {
             currentWaypoint++;
         }
-        //rb2d.velocity.Normalize();
+        rb2d.velocity.Normalize();
 
     }
 
@@ -255,6 +255,7 @@ public class MultiAgentFSM : MonoBehaviour
 
     private void BuildState()
     {
+        
         if (IsTargetInRange())
         { 
             buildCounter += Time.deltaTime;
@@ -276,9 +277,11 @@ public class MultiAgentFSM : MonoBehaviour
             atDestination = false;
             canMove = true;
             
-            currentState = States.MOVING;
+            
             CancelInvoke("UpdatePath");
             InvokeRepeating("UpdatePath", 0f, 0.5f);
+            currentState = States.MOVING;
+
         }
 
         if (this.unitInfo.unitType == UnitTypes.NORMAL || this.unitInfo.unitType == UnitTypes.LUMBERJACK || this.unitInfo.unitType == UnitTypes.GATHERER)
@@ -484,6 +487,7 @@ public class MultiAgentFSM : MonoBehaviour
         {
             ComputeMovement();
         }
+
         if(atDestination)
         {
             rb2d.velocity = Vector2.zero;
@@ -525,24 +529,36 @@ public class MultiAgentFSM : MonoBehaviour
 
     private void GatherState()
     {
-        
-        if(target.gameObject.CompareTag("Prey"))
+        if (IsTargetInRange())
         {
-            if (target.GetComponent<preyAI>().GetHealth() >= 0)
+            if (target.gameObject.CompareTag("Prey"))
             {
-                AttackTarget(target);
-            }
-            else if(target.GetComponent<preyAI>().GetHealth() < 0)
-            {
-                ressourcesQuantity[1] += target.GetComponent<Ressource>().GetAnimalYield();
-                target.GetComponent<preyAI>().Die();
-                target = null;
-                
-            }
-        }
-        else
-            ConsumeRessource(target);
+                if (target.GetComponent<preyAI>().GetHealth() >= 0)
+                {
+                    AttackTarget(target);
+                }
+                else if (target.GetComponent<preyAI>().GetHealth() < 0)
+                {
+                    ressourcesQuantity[1] += target.GetComponent<Ressource>().GetAnimalYield();
+                    target.GetComponent<preyAI>().Die();
+                    target = null;
 
+                }
+            }
+            else
+                ConsumeRessource(target);
+        }
+        else if(!IsTargetInRange())
+        {
+            reachedEndOfPath = false;
+            atDestination = false;
+            canMove = true;
+            
+            
+            CancelInvoke("UpdatePath");
+            InvokeRepeating("UpdatePath", 0f, 0.5f);
+            currentState = States.MOVING;
+        }
 
         if(isFull)
         {
