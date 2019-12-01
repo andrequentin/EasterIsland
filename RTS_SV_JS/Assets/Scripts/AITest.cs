@@ -364,7 +364,7 @@ public class AITest : MonoBehaviour
             this.rb2d.velocity = Vector2.zero;
 
         }*/
-        ClearPath();
+        //ClearPath();
         /*if (path != null)
         { 
             OnPathComplete(path);
@@ -404,7 +404,7 @@ public class AITest : MonoBehaviour
 
 
 
-        ClearPath();
+        //ClearPath();
 
         if (target != null)
             target = null;

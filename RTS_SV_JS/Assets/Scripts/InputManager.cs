@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class InputManager : MonoBehaviour
 {
@@ -73,53 +74,62 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            ToggleInfoPanel();
-        }
+        if (SceneManager.GetActiveScene().buildIndex == 1)
+        { 
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                ToggleInfoPanel();
+            }
 
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            upgradeSelected = true;
-            GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleUpgradePanel");
-        }
+            if (Input.GetKeyDown(KeyCode.U))
+            {
+                upgradeSelected = true;
+                GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleUpgradePanel");
+            }
 
-        if (Input.GetMouseButtonDown(0) && !buildingPending)
-        {
-            if (!EventSystem.current.IsPointerOverGameObject())
-                LeftClick();
-        }
-        else if (Input.GetMouseButtonDown(0) && buildingPending)
-        {
-            PutBuilding();
-        }
+            if(Input.GetKeyDown(KeyCode.M))
+            {
+                Time.timeScale++;
+            }
 
-        if (Input.GetMouseButton(0) && boxStartingPosition == Vector2.zero)
-        {
-            isMultiSelecting = true;
-            boxStartingPosition = Input.mousePosition;
-        }
-        else if (Input.GetMouseButton(0) && boxStartingPosition != Vector2.zero)
-        {
-            boxEndingPosition = Input.mousePosition;
-        }
+            if(Input.GetKeyDown(KeyCode.L))
+            {
+                Time.timeScale--;
+            }
 
-        if (Input.GetMouseButtonUp(0) && !buildingPending)
-        {
-            units = GameObject.FindGameObjectsWithTag(SELECTABLE_TAG);
-            MultiSelect();
-            isMultiSelecting = false;
+            if (Input.GetMouseButtonDown(0) && !buildingPending)
+            {
+                if (!EventSystem.current.IsPointerOverGameObject())
+                    LeftClick();
+            }
+            else if (Input.GetMouseButtonDown(0) && buildingPending)
+            {
+                PutBuilding();
+            }
+
+            if (Input.GetMouseButton(0) && boxStartingPosition == Vector2.zero)
+            {
+                isMultiSelecting = true;
+                boxStartingPosition = Input.mousePosition;
+            }
+            else if (Input.GetMouseButton(0) && boxStartingPosition != Vector2.zero)
+            {
+                boxEndingPosition = Input.mousePosition;
+            }
+
+            if (Input.GetMouseButtonUp(0) && !buildingPending)
+            {
+                units = GameObject.FindGameObjectsWithTag(SELECTABLE_TAG);
+                MultiSelect();
+                isMultiSelecting = false;
+            }
+
+            if (selectedObjects.Count > 0 && Input.GetMouseButtonDown(1))
+            {
+                RightClick();
+            }
+            selectBox = new Rect(boxStartingPosition.x,Screen.height - boxStartingPosition.y, boxEndingPosition.x - boxStartingPosition.x, -1 * ((Screen.height - boxStartingPosition.y) - (Screen.height - boxEndingPosition.y)));
         }
-
-        if (selectedObjects.Count > 0 && Input.GetMouseButtonDown(1))
-        {
-            RightClick();
-        }
-
-    
-        
-
-        selectBox = new Rect(boxStartingPosition.x,Screen.height - boxStartingPosition.y, boxEndingPosition.x - boxStartingPosition.x, -1 * ((Screen.height - boxStartingPosition.y) - (Screen.height - boxEndingPosition.y)));
     }
 
     
@@ -146,6 +156,11 @@ public class InputManager : MonoBehaviour
     void LeftClick()
     {
         Vector2 origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        /*if(!GameObject.FindGameObjectWithTag("Ground").GetComponent<SpriteRenderer>().sprite.bounds.Contains(origin) )
+        {
+            Debug.Log("Out of boounds");
+            return;
+        }*/
         RaycastHit2D hit = Physics2D.Raycast(origin, -Vector2.up);
         if (forestSelected)
         {

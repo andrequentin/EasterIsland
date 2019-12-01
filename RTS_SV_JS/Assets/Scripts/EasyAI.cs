@@ -41,7 +41,7 @@ public class EasyAI : MonoBehaviour
     private int lumberjackWoodCost = 5;
     private int gathererVegetalCost = 5;
 
-    private Vector2 currentBuildSlot = new Vector2(-23f, 23);
+    private Vector2 currentBuildSlot = new Vector2(-90f, 95);
 
     public List<GameObject> buildList = new List<GameObject>();
     public List<GameObject> pendingCitizens = new List<GameObject>();
@@ -71,6 +71,7 @@ public class EasyAI : MonoBehaviour
         GameObject[] unitsTab = GameObject.FindGameObjectsWithTag("Enemy");
         units.AddRange(unitsTab);
         currentPopulation = units.Count;
+        scarceRessourceThreshold = GameManager._instance.ressourceThreshold;
     }
 
     // Update is called once per frame
@@ -119,14 +120,14 @@ public class EasyAI : MonoBehaviour
             BuildHouse();
        }
 
-       if(this.AIDropPoint.GetWood() >= this.AIDropPoint.GetMaxWood() - 10)
+       if(this.AIDropPoint.GetWood() >= this.AIDropPoint.GetMaxWood() - 10 && this.AIDropPoint.GetWood() >= sawMillCost)
         {
             //Build sawmill
             BuildSawmill();
         }
 
         if (this.AIDropPoint.GetAnimal() >= (this.AIDropPoint.GetMaxAnimal() - 10) || this.AIDropPoint.GetVegetal() >= (this.AIDropPoint.GetMaxVegetal() - 10))
-        {
+        {if(this.AIDropPoint.GetWood() >= granaryCost)
             //Build granary
             BuildGranary();
         }
@@ -228,25 +229,46 @@ public class EasyAI : MonoBehaviour
 
     private void BuildHouse()
     {
+        this.currentBuildSlot.x += 2.5f;
+        if (this.currentBuildSlot.x >= 0)
+        {
+            this.currentBuildSlot.y -= 2.5f;
+            this.currentBuildSlot.x = -90;
+        }
+
         GameObject temp = Instantiate(houseFoundation, currentBuildSlot, Quaternion.identity);
         this.AIDropPoint.DecrementWood(houseCost);
-        this.currentBuildSlot.x += 2.5f;
+        
         this.buildList.Add(temp);
     }
 
     private void BuildSawmill()
     {
+        this.currentBuildSlot.x += 2.5f;
+        if(this.currentBuildSlot.x >= 0)
+        {
+            this.currentBuildSlot.y -= 2.5f;
+            this.currentBuildSlot.x = -90;
+        }
+
         GameObject temp = Instantiate(sawMillFoundation, currentBuildSlot, Quaternion.identity);
         this.AIDropPoint.DecrementWood(sawMillCost);
-        this.currentBuildSlot.x += 2.5f;
+        
         this.buildList.Add(temp);
     }
 
     private void BuildGranary()
     {
+        this.currentBuildSlot.x += 2.5f;
+        if (this.currentBuildSlot.x >= 0)
+        {
+            this.currentBuildSlot.y -= 2.5f;
+            this.currentBuildSlot.x = -90;
+        }
+
         GameObject temp = Instantiate(granaryFoundation, currentBuildSlot, Quaternion.identity);
         this.AIDropPoint.DecrementWood(granaryCost);
-        this.currentBuildSlot.x += 2.5f;
+        
         this.buildList.Add(temp);
 
     }

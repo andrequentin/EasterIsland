@@ -8,6 +8,9 @@ public class MainMenuScript : MonoBehaviour
     [SerializeField]
     GameObject optionsPanel;
 
+    [SerializeField]
+    GameObject paramPanel;
+
     public AudioMixer audioMixer;
     // Start is called before the first frame update
     void Start()
@@ -23,7 +26,18 @@ public class MainMenuScript : MonoBehaviour
 
     public void StartGameButton()
     {
+        //SceneManager.LoadScene(1);
+        paramPanel.SetActive(true);
+    }
+
+    public void LaunchGameButton()
+    {
         SceneManager.LoadScene(1);
+    }
+
+    public void CancelStartGameButton()
+    {
+        paramPanel.SetActive(false);
     }
 
     public void OptionsButton()

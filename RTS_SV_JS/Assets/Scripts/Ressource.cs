@@ -13,7 +13,8 @@ public enum RessourceTypes
 
 public class Ressource : MonoBehaviour
 {
-    
+    private int woodRegen;
+    private int vegetalRegen;
     public RessourceTypes ressourceType;
     public int maxYield;
     public int currentYield;
@@ -22,6 +23,8 @@ public class Ressource : MonoBehaviour
     void Start()
     {
         this.currentYield = this.maxYield;
+        this.woodRegen = GameManager._instance.woodRegen;
+        this.vegetalRegen = GameManager._instance.vegetalRegen;
     }
 
     // Update is called once per frame
@@ -31,10 +34,17 @@ public class Ressource : MonoBehaviour
         {
             time += Time.deltaTime;
         }
-        if (time >= 1.0f && currentYield<maxYield)
+
+        if (time >= 1.0f && currentYield<maxYield && ressourceType == RessourceTypes.WOOD)
         {
             time = 0.0f;
-            currentYield++;
+            currentYield += woodRegen;
+        }
+
+        if (time >= 1.0f && currentYield < maxYield && ressourceType == RessourceTypes.WOOD)
+        {
+            time = 0.0f;
+            currentYield += vegetalRegen;
         }
 
         Mathf.Clamp(currentYield, 0, maxYield);

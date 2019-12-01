@@ -21,6 +21,12 @@ public class GameManager : MonoBehaviour
     public bool lostGameByRessource = false;
     private int forestCount = 0;
     private int birdCount = 0;
+
+
+    public int ressourceThreshold;
+    public int woodRegen;
+    public int vegetalRegen;
+    public float birdReprRate;
     private void Awake()
     {
         if (_instance == null)
@@ -37,9 +43,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        dropPoint = GameObject.FindGameObjectWithTag("DropPoint");
-        maxPopulation = 5;
-        currentPopulation = FindObjectsOfType<AITest>().Length;
+
+        
     }
     
     // Update is called once per frame
@@ -50,9 +55,14 @@ public class GameManager : MonoBehaviour
             endGamePanel = GameObject.FindGameObjectWithTag("EndGamePanel");
             endGamePanelDetected = true;
             endGamePanel.SetActive(false);
+
+            dropPoint = GameObject.FindGameObjectWithTag("DropPoint");
+            maxPopulation = 5;
+            currentPopulation = FindObjectsOfType<AITest>().Length;
         }
 
-        UpdateRessources();
+        if(SceneManager.GetActiveScene().buildIndex == 1)
+            UpdateRessources();
 
         if(wonGame)
         {
@@ -72,14 +82,17 @@ public class GameManager : MonoBehaviour
         forestCount = GameObject.FindGameObjectsWithTag("Ressource").Length;
         birdCount = GameObject.FindGameObjectsWithTag("Prey").Length;
 
-        if(forestCount <= 0 || birdCount <= 1)
+        if (SceneManager.GetActiveScene().buildIndex == 1)
         {
-            lostGameByRessource = true;
-            wonGame = false;
-            lostGame = false;
-            Time.timeScale = 0;
-            endGamePanel.SetActive(true);
-            endGamePanel.SendMessage("SetLostPanelByRessource");
+            if (forestCount <= 0 || birdCount <= 1)
+            {
+                lostGameByRessource = true;
+                wonGame = false;
+                lostGame = false;
+                Time.timeScale = 0;
+                endGamePanel.SetActive(true);
+                endGamePanel.SendMessage("SetLostPanelByRessource");
+            }
         }
     }
 
@@ -104,6 +117,8 @@ public class GameManager : MonoBehaviour
     {
         return this.dropPoint;
     }
+
+    
 
   
 }

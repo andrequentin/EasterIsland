@@ -39,6 +39,7 @@ public class preyAI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        timeLeftMax = GameManager._instance.birdReprRate;
         mated = 0;
         rb2d = GetComponent<Rigidbody2D>();
         rb2d.drag = 5;
