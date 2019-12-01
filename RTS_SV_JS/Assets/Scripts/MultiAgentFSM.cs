@@ -418,36 +418,40 @@ public class MultiAgentFSM : MonoBehaviour
 
             if (consumeCounter >= unitInfo.gatherSpeed)
             {
-                if (target.GetComponent<Ressource>().ressourceType == lookingFor)
+                foreach (Ressource u in target.GetComponents<Ressource>())
                 {
-
-                    if (target.GetComponent<Ressource>().getYield() <= 0)
-                    {  
-                        this.target = null;
-                    }
-                    
-
-                    switch (lookingFor)
+                    if (u.ressourceType == lookingFor)
                     {
-                        case RessourceTypes.WOOD:
-                            this.ressourcesQuantity[0] += unitInfo.gatherTick;
-                            break;
-                        case RessourceTypes.ANIMAL:
-                            this.ressourcesQuantity[1] += unitInfo.gatherTick;
-                            break;
-                        case RessourceTypes.VEGETAL:
-                            this.ressourcesQuantity[2] += unitInfo.gatherTick;
-                            break;
-                        default:
-                            break;
+                        if (target.GetComponent<Ressource>().getYield() <= 0)
+                        {
+                            this.target = null;
+                        }
+
+
+                        switch (lookingFor)
+                        {
+                            case RessourceTypes.WOOD:
+                                this.ressourcesQuantity[0] += unitInfo.gatherTick;
+                                break;
+                            case RessourceTypes.ANIMAL:
+                                this.ressourcesQuantity[1] += unitInfo.gatherTick;
+                                break;
+                            case RessourceTypes.VEGETAL:
+                                this.ressourcesQuantity[2] += unitInfo.gatherTick;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        object[] a = new object[2];
+                        a[0] = unitInfo.gatherTick;
+                        a[1] = lookingFor;
+
+                        target.SendMessage("Consume", a);
+                        consumeCounter = 0f;
                     }
                 }
-                object[] a = new object[2];
-                a[0] = unitInfo.gatherTick;
-                a[1] = lookingFor;
 
-                target.SendMessage("Consume", a);
-                consumeCounter = 0f;
             }
         }
         if (isFull && unitInfo.unitType == UnitTypes.LUMBERJACK)

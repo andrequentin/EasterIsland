@@ -147,18 +147,18 @@ public class InputManager : MonoBehaviour
     {
         Vector2 origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(origin, -Vector2.up);
+        if (forestSelected)
+        {
+            forestSelected = false;
+            GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleForestPanel");
+        }
 
-        if(hit.collider != null && hit.transform.tag == SELECTABLE_TAG /*&& selectedObject==null*/)
+        if (hit.collider != null && hit.transform.tag == SELECTABLE_TAG /*&& selectedObject==null*/)
         {
             if(buildSelected)
             {
                 buildSelected = false;
                 GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleBuildPanel");
-            }
-            if (forestSelected)
-            {
-                forestSelected = false;
-                GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleForestPanel");
             }
             //selectedObject = hit.collider.gameObject;
             if (!selectedObjects.Contains(hit.collider.gameObject))
