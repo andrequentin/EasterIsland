@@ -490,6 +490,20 @@ public class MultiAgentFSM : MonoBehaviour
             this.currentState = States.MOVING;
         }
 
+        if(unitInfo.unitType == UnitTypes.WARRIOR)
+        {
+            Collider2D[] detected = Physics2D.OverlapCircleAll(this.transform.position, detectionRange);
+            foreach (Collider2D c in detected)
+            {
+                if (c.gameObject.GetComponent<AITest>())
+                {
+                    this.target = c.gameObject.transform;
+                    this.currentState = States.MOVING;
+                    break;
+                }
+            }
+        }
+
         if (canMove && target != null)
         {
             ComputeMovement();
@@ -644,6 +658,19 @@ public class MultiAgentFSM : MonoBehaviour
         if(this.unitInfo.unitType == UnitTypes.WARRIOR)
         {
             AttackTarget(target);
+
+            
+            Collider2D[] detected = Physics2D.OverlapCircleAll(this.transform.position, detectionRange);
+            foreach (Collider2D c in detected)
+            {
+                if (c.gameObject.GetComponent<AITest>())
+                {
+                    this.target = c.gameObject.transform;
+                    this.currentState = States.MOVING;
+                    break;
+                }
+            }
+            
         }
         else
         {
