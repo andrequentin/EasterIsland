@@ -190,9 +190,10 @@ public class MultiAgentFSM : MonoBehaviour
             }
         }
 
+        CapacityCheck();
+        UpdateGFX();
 
-
-        switch(currentState)
+        switch (currentState)
         {
             case States.IDLE:
                 IdleState();
@@ -223,11 +224,11 @@ public class MultiAgentFSM : MonoBehaviour
 
             case States.STOCKING:
                 StockState();
-                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable"))
+                /*if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable"))
                 {
                     //this.currentState = States.BUILDING;
                     SetTarget(EasyAI._instance.buildList[0].transform);
-                }
+                }*/
                 break;
 
             case States.FIGHTING:
@@ -249,8 +250,7 @@ public class MultiAgentFSM : MonoBehaviour
 
         }
         
-        CapacityCheck();
-        UpdateGFX();
+        
     }
 
     private void BuildState()
@@ -562,7 +562,12 @@ public class MultiAgentFSM : MonoBehaviour
 
         if(isFull)
         {
+            reachedEndOfPath = false;
+            atDestination = false;
+            canMove = true;
             SetTarget(GameObject.FindGameObjectWithTag(DROPPOINT_TAG).gameObject.transform);
+            CancelInvoke("UpdatePath");
+            InvokeRepeating("UpdatePath", 0f, 0.5f);
             this.currentState = States.MOVING;
         }
 
