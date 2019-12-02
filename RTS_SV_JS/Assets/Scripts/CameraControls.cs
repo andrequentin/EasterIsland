@@ -11,10 +11,10 @@ public class CameraControls : MonoBehaviour
     public float cameraRotateSpeed = 0.3f;
     public float rotateAmount;
 
-    public float cameraZoomSpeed = 6f;
+    public float cameraZoomSpeed = 24f;
 
     private float minZoom = 5;
-    private float maxZoom = 10;
+    private float maxZoom = 60;
     Vector2 moveInput;
     private Quaternion cameraRot;
 
