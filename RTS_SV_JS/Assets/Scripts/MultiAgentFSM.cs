@@ -161,7 +161,6 @@ public class MultiAgentFSM : MonoBehaviour
         //oldDestination = nullVector;
         this.oldTarget = this.target;
         this.target = t;
-        if (target.gameObject.CompareTag("Prey")) { lookingFor = RessourceTypes.ANIMAL; }
 
         if (this.target != this.oldTarget)
         {

@@ -214,6 +214,11 @@ public class AITest : MonoBehaviour
 
             consumeCounter = 0f;
         }
+        CapacityCheck();
+        if (isFull)
+        {
+            SetTarget(GameObject.FindGameObjectWithTag("DropPoint").GetComponent<DropPoint>().transform);
+        }
     }
 
     void DropRessources(Transform target)

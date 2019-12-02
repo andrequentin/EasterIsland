@@ -41,7 +41,7 @@ public class Ressource : MonoBehaviour
             currentYield += woodRegen;
         }
 
-        if (time >= 1.0f && currentYield < maxYield && ressourceType == RessourceTypes.WOOD)
+        if (time >= 1.0f && currentYield < maxYield && ressourceType == RessourceTypes.VEGETAL)
         {
             time = 0.0f;
             currentYield += vegetalRegen;
