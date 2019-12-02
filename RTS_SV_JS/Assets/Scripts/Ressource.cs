@@ -50,21 +50,13 @@ public class Ressource : MonoBehaviour
         Mathf.Clamp(currentYield, 0, maxYield);
         CheckYield();
     }   
-    public void Grow(int g)
-    {
-
-        if (ressourceType == RessourceTypes.WOOD)
-        {
-            maxYield += g;
-        }
-    }
+    
     public void Consume(object[] a)
     {
         // Ressource[] rs = (this.GetComponents<Ressource>());
-        if ((RessourceTypes)a[1] == ressourceType && currentYield>0)
-        {
+        
             currentYield -= (int)a[0];
-        }
+        
     }
 
     public int getYield()

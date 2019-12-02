@@ -69,7 +69,6 @@ public class AITest : MonoBehaviour
 
     public bool canMove = true;
     private bool atDestination = false;
-    public bool grow = false;
     
     public float consumeCounter = 0f;
     public float attackCounter;
@@ -131,13 +130,9 @@ public class AITest : MonoBehaviour
            
             if(target != null && target.gameObject.tag == RESSOURCE_TAG && !isFull)
             {
-                if (unitInfo.unitType == UnitTypes.LUMBERJACK && grow && ressourcesQuantity[2]>=2)
-                {
-                    target.SendMessage("Grow",1);
-                    ressourcesQuantity[2] -= 2;
-                }else {
+   
                     ConsumeRessource(target);
-                }
+                
             }
 
             else if(target != null && target.gameObject.tag == DROPPOINT_TAG)
@@ -150,6 +145,7 @@ public class AITest : MonoBehaviour
             }
             else if (target != null && target.gameObject.tag == PREY_TAG)
             {
+                lookingFor = RessourceTypes.ANIMAL;
                 if (target.GetComponent<preyAI>().GetHealth() > 0)
                 {
                     AttackTarget(target);
@@ -376,8 +372,9 @@ public class AITest : MonoBehaviour
 
         this.oldTarget = this.target;
         this.target = t;
+        if (t.tag == "Prey") lookingFor = RessourceTypes.ANIMAL;
 
-        if(this.target != this.oldTarget && this.target.tag != "Enemy" && this.target.tag != "Prey")
+        if (this.target != this.oldTarget && this.target.tag != "Enemy" && this.target.tag != "Prey")
         {
             //Debug.Log("test");
             atDestination = false;

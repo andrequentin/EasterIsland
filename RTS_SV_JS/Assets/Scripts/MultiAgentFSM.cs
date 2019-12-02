@@ -159,7 +159,7 @@ public class MultiAgentFSM : MonoBehaviour
 
         //destination = nullVector;
         //oldDestination = nullVector;
-
+        if (t.tag == "Prey") lookingFor = RessourceTypes.ANIMAL;
         this.oldTarget = this.target;
         this.target = t;
 
@@ -308,7 +308,7 @@ public class MultiAgentFSM : MonoBehaviour
             {
                 if (scarceRessources[0])
                 {
-                    SetTarget(GetNearestRessourcePoint(RessourceTypes.VEGETAL));
+                    SetTarget(GetNearestRessourcePoint(RessourceTypes.WOOD));
                 }
             }
 
@@ -457,16 +457,7 @@ public class MultiAgentFSM : MonoBehaviour
 
             }
         }
-        if (isFull && unitInfo.unitType == UnitTypes.LUMBERJACK)
-        {
-            if (ressourcesQuantity[2] >= 2)
-            {
-                int v = ressourcesQuantity[2];
-                target.SendMessage("Grow", v / 2);
-                ressourcesQuantity[2] -= v;
-                lookingFor = RessourceTypes.WOOD;
-            }
-        }
+  
     }
 
     void DropRessources(Transform target)

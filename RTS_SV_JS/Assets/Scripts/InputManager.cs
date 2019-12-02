@@ -46,22 +46,45 @@ public class InputManager : MonoBehaviour
 
     public void PutBuilding()
     {
-        if (GameManager._instance.wood >= buildingCost)
+        if (buildingToPut.tag == "forestFoundation")
         {
-            Vector2 putPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-           
-            Instantiate(buildingToPut, putPosition, Quaternion.identity);
-            this.buildingToPut = null;
-            buildingPending = false;
-            GameObject.FindGameObjectWithTag("DropPoint").SendMessage("DecrementWood", buildingCost);
-            buildingCost = 0;
+            if (GameManager._instance.vegetal >= buildingCost)
+            {
+                Vector2 putPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                Instantiate(buildingToPut, putPosition, Quaternion.identity);
+                this.buildingToPut = null;
+                buildingPending = false;
+                GameObject.FindGameObjectWithTag("DropPoint").SendMessage("DecrementVegetal", buildingCost);
+                buildingCost = 0;
+            }
+            else
+            {
+                MessageDisplayer._instance.DisplayMessage("Not enough vegetal");
+                this.buildingToPut = null;
+                buildingPending = false;
+                buildingCost = 0;
+            }
         }
         else
         {
-            MessageDisplayer._instance.DisplayMessage("Not enough wood");
-            this.buildingToPut = null;
-            buildingPending = false;
-            buildingCost = 0;
+            if (GameManager._instance.wood >= buildingCost)
+            {
+                Vector2 putPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                Instantiate(buildingToPut, putPosition, Quaternion.identity);
+                this.buildingToPut = null;
+                buildingPending = false;
+                GameObject.FindGameObjectWithTag("DropPoint").SendMessage("DecrementWood", buildingCost);
+                buildingCost = 0;
+            }
+            else
+            {
+                MessageDisplayer._instance.DisplayMessage("Not enough wood");
+                this.buildingToPut = null;
+                buildingPending = false;
+                buildingCost = 0;
+            }
         }
     }
 

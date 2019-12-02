@@ -11,10 +11,13 @@ public class BuildMenu : MonoBehaviour
     private GameObject sawMillFoundation;
     [SerializeField]
     private GameObject granaryFoundation;
+    [SerializeField]
+    private GameObject forestFoundation;
     private int houseCost = 20;
     private int sawMillCost = 30;
     private int granaryCost = 30;
     private int citizenCost = 10;
+    private int forestCost = 20;
     [SerializeField]
     private GameObject citizenPrefab;
     private Vector3 citizenSpawnPosition = new Vector3(15, -22, -1);
@@ -36,7 +39,12 @@ public class BuildMenu : MonoBehaviour
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPutCost", houseCost);
         Debug.Log("Build House");
     }
-
+    public void BuildForest()
+    {
+        GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPut", forestFoundation);
+        GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPutCost", forestCost);
+        Debug.Log("Build forest");
+    }
     public void BuildSawMill()
     {
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPut", sawMillFoundation);

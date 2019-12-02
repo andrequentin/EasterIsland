@@ -11,15 +11,25 @@ public class Buildable : MonoBehaviour
     [SerializeField]
     GameObject finalResult;
     // Start is called before the first frame update
-
+    private float timer = 1;
     private void Update()
     {
-        if(currentBuildValue >= maxBuild)
+        if (this.tag == "forestFoundation")
+        {
+            timer -= Time.deltaTime;
+            if (timer <= 0)
+            {
+                BuildMe(1);
+                timer = 1;
+            }
+        }
+        if (currentBuildValue >= maxBuild)
         {
             Instantiate(finalResult, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
             
         }
+        
     }
 
     public void BuildMe(int b)

@@ -35,16 +35,5 @@ public class ForestMenu : MonoBehaviour
             }
         }
     }
-    public void Grow()
-    {
-        Debug.Log("gro");
-        foreach (GameObject u in im.selectedObjects)
-        {
-            if (u.GetComponent<AITest>().unitInfo.unitType == UnitTypes.LUMBERJACK)
-            {
-                u.GetComponent<AITest>().grow=true;
-                u.GetComponent<AITest>().lookingFor = RessourceTypes.VEGETAL;
-            }
-        }
-    }
+    
 }

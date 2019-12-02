@@ -27,7 +27,10 @@ public class EasyAI : MonoBehaviour
     private GameObject sawMillFoundation;
     [SerializeField]
     private GameObject granaryFoundation;
+    [SerializeField]
+    private GameObject forestFoundation;
 
+    private int forestCost = 20;
     private int houseCost = 20;
     private int sawMillCost = 30;
     private int granaryCost = 30;
@@ -119,7 +122,10 @@ public class EasyAI : MonoBehaviour
             //Build a house
             BuildHouse();
        }
-
+        if (getNbForest() < 1)
+        {
+            BuildForest();
+        }
        if(this.AIDropPoint.GetWood() >= this.AIDropPoint.GetMaxWood() - 10 && this.AIDropPoint.GetWood() >= sawMillCost)
         {
             //Build sawmill
@@ -142,7 +148,20 @@ public class EasyAI : MonoBehaviour
 
 
     }
-
+    private int getNbForest()
+    {
+        GameObject[] r = GameObject.FindGameObjectsWithTag("Ressource");
+        int nb = 0;
+        foreach (GameObject g in r)
+        {
+            Ressource [] rs = g.GetComponents<Ressource>();
+            if(rs[0].ressourceType == RessourceTypes.WOOD || rs[0].ressourceType == RessourceTypes.VEGETAL)
+            {
+                nb++;
+            }
+        }
+        return nb;
+    }
     void CheckPendingCitizensForUpgrade()
     {
         if(pendingCitizens.Count >0)
@@ -240,6 +259,20 @@ public class EasyAI : MonoBehaviour
         this.AIDropPoint.DecrementWood(houseCost);
         
         this.buildList.Add(temp);
+    }
+
+    private void BuildForest()
+    {
+        this.currentBuildSlot.x += 2.5f;
+        if (this.currentBuildSlot.x >= 0)
+        {
+            this.currentBuildSlot.y -= 2.5f;
+            this.currentBuildSlot.x = -90;
+        }
+
+        GameObject temp = Instantiate(forestFoundation, currentBuildSlot, Quaternion.identity);
+        this.AIDropPoint.DecrementWood(forestCost);
+
     }
 
     private void BuildSawmill()

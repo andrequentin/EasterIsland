@@ -21,6 +21,7 @@ TagManager:
   - PlayerBuilding
   - EndGamePanel
   - growbutton
+  - forestFoundation
   layers:
   - Default
   - TransparentFX
