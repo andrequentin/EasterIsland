@@ -216,15 +216,7 @@ public class AITest : MonoBehaviour
             consumeCounter = 0f;
         }
 
-        if (target.GetComponent<Ressource>().getYield() <= 0 || target == null) {
-            SetTarget(GetNearestRessourcePoint(lookingFor).transform);
-        }
-
-        CapacityCheck();
-        if (isFull)
-        {
-            SetTarget(GameObject.FindGameObjectWithTag("DropPoint").GetComponent<DropPoint>().transform);
-        }
+        
     }
 
     void DropRessources(Transform target)
@@ -238,9 +230,9 @@ public class AITest : MonoBehaviour
             ressourcesQuantity[1] = 0;
             ressourcesQuantity[2] = 0;
         }
-        SetTarget(GetNearestRessourcePoint(lookingFor)); 
+        //SetTarget(GetNearestRessourcePoint(lookingFor)); 
     }
-    private Transform GetNearestRessourcePoint(RessourceTypes ressourceType)
+    /*private Transform GetNearestRessourcePoint(RessourceTypes ressourceType)
     {
         if (FindObjectsOfType<Ressource>().Length > 0)
         {
@@ -275,7 +267,7 @@ public class AITest : MonoBehaviour
             else return null;
         }
         else return null;
-    }
+    }*/
 
     //SET A RANGE ATTRIBUTE AND TEST ON RANGE OR ELSE THEY WILL ATTACK FROM AFAR
     void AttackTarget(Transform target)
@@ -420,6 +412,7 @@ public class AITest : MonoBehaviour
         this.oldTarget = this.target;
         this.target = t;
         if (t.tag == "Prey") lookingFor = RessourceTypes.ANIMAL;
+     //   if (t.tag == "Ressource") lookingFor = RessourceTypes.VEGETAL;
 
         if (this.target != this.oldTarget && this.target.tag != "Enemy" && this.target.tag != "Prey")
         {
