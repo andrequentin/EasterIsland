@@ -182,13 +182,14 @@ public class AITest : MonoBehaviour
     {
         consumeCounter += Time.deltaTime;
 
-        if(consumeCounter >= unitInfo.gatherSpeed)
+        if (consumeCounter >= unitInfo.gatherSpeed)
         {
             if (target.GetComponent<Ressource>())
             {
 
-                if (target.GetComponent<Ressource>().getYield() <= 0) { 
+                if (target.GetComponent<Ressource>().getYield() <= 0) {
                     target.GetComponent<preyAI>().Die(); this.target = null;
+
                 }
 
                 switch (lookingFor)
@@ -214,6 +215,11 @@ public class AITest : MonoBehaviour
 
             consumeCounter = 0f;
         }
+
+        if (target.GetComponent<Ressource>().getYield() <= 0 || target == null) {
+            SetTarget(GetNearestRessourcePoint(lookingFor).transform);
+        }
+
         CapacityCheck();
         if (isFull)
         {
@@ -232,8 +238,44 @@ public class AITest : MonoBehaviour
             ressourcesQuantity[1] = 0;
             ressourcesQuantity[2] = 0;
         }
+        SetTarget(GetNearestRessourcePoint(lookingFor)); 
     }
+    private Transform GetNearestRessourcePoint(RessourceTypes ressourceType)
+    {
+        if (FindObjectsOfType<Ressource>().Length > 0)
+        {
+            Ressource[] temp = FindObjectsOfType<Ressource>();
+            List<Transform> ressourceLocation = new List<Transform>();
+            for (int i = 0; i < temp.Length; i++)
+            {
+                if (temp[i].GetRessourceType() == ressourceType)
+                    ressourceLocation.Add(temp[i].gameObject.transform);
+            }
 
+
+            if (ressourceLocation.Count > 0)
+            {
+                Transform nearestRessource = ressourceLocation[0];
+                float nearestDistance = Vector2.Distance(this.gameObject.transform.position, nearestRessource.position);
+
+                foreach (Transform r in nearestRessource)
+                {
+                    float tempDistance = Vector2.Distance(this.gameObject.transform.position, r.position);
+                    if (tempDistance < nearestDistance)
+                    {
+                        nearestDistance = tempDistance;
+                        nearestRessource = r.gameObject.transform;
+                    }
+                }
+                print(nearestRessource);
+                lookingFor = ressourceType;
+
+                return nearestRessource;
+            }
+            else return null;
+        }
+        else return null;
+    }
 
     //SET A RANGE ATTRIBUTE AND TEST ON RANGE OR ELSE THEY WILL ATTACK FROM AFAR
     void AttackTarget(Transform target)
