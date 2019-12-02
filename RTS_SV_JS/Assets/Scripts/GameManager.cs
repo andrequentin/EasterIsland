@@ -73,7 +73,8 @@ public class GameManager : MonoBehaviour
         }
         if(lostGame)
         {
-            wonGame = false;
+            //wonGame = false;
+            Debug.Log("GOGOGO");
             Time.timeScale = 0;
             endGamePanel.SetActive(true);
             endGamePanel.SendMessage("SetLostPanel");

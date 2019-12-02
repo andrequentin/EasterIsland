@@ -205,7 +205,7 @@ public class MultiAgentFSM : MonoBehaviour
 
             case States.MOVING:
                 MovingState();
-                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable"))
+                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable") && this.unitInfo.unitType != UnitTypes.WARRIOR)
                 {
                     //this.currentState = States.BUILDING;
                     SetTarget(EasyAI._instance.buildList[0].transform);
@@ -214,7 +214,7 @@ public class MultiAgentFSM : MonoBehaviour
 
             case States.GATHERING:
                 GatherState();
-                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable"))
+                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable") && this.unitInfo.unitType != UnitTypes.WARRIOR)
                 {
                     //this.currentState = States.BUILDING;
                     SetTarget(EasyAI._instance.buildList[0].transform);
@@ -232,7 +232,7 @@ public class MultiAgentFSM : MonoBehaviour
 
             case States.FIGHTING:
                 FightState();
-                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable"))
+                if (EasyAI._instance.buildList.Count > 0 && !target.CompareTag("EnemyBuildable") && this.unitInfo.unitType != UnitTypes.WARRIOR)
                 {
                     //this.currentState = States.BUILDING;
                     SetTarget(EasyAI._instance.buildList[0].transform);
@@ -401,6 +401,12 @@ public class MultiAgentFSM : MonoBehaviour
                     break;
                 }
             }
+
+            if(target == null)
+            {
+                SetTarget(GameObject.FindGameObjectWithTag("DropPoint").transform);
+                this.currentState = States.MOVING;
+            }
         }
 
         randomMoveCounter += Time.deltaTime;
@@ -473,6 +479,17 @@ public class MultiAgentFSM : MonoBehaviour
 
     private void MovingState()
     {
+        if (isFull && !target.CompareTag("EnemyDropPoint"))
+        {
+            reachedEndOfPath = false;
+            atDestination = false;
+            canMove = true;
+            SetTarget(GameObject.FindGameObjectWithTag(DROPPOINT_TAG).gameObject.transform);
+            CancelInvoke("UpdatePath");
+            InvokeRepeating("UpdatePath", 0f, 0.5f);
+            this.currentState = States.MOVING;
+        }
+
         if (canMove && target != null)
         {
             ComputeMovement();
@@ -502,6 +519,10 @@ public class MultiAgentFSM : MonoBehaviour
             else if(target != null && target.gameObject.CompareTag("EnemyBuildable"))
             {
                 this.currentState = States.BUILDING;
+            }
+            else if(target != null && target.gameObject.CompareTag("DropPoint"))
+            {
+                this.currentState = States.FIGHTING;
             }
         }
 

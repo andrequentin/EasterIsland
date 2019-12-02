@@ -80,7 +80,8 @@ public class BuildingHealth : MonoBehaviour
             else
                 GameManager._instance.lostGame = true;
         }
-        Destroy(this.gameObject);
+        if(!isNexus)
+            Destroy(this.gameObject);
     }
 
     

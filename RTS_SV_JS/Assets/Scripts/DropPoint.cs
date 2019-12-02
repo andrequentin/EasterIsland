@@ -28,7 +28,7 @@ public class DropPoint : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //CheckCapacity();
+        CheckCapacity();
     }
 
     private void CheckCapacity()

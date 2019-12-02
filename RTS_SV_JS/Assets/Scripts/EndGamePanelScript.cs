@@ -13,18 +13,18 @@ public class EndGamePanelScript : MonoBehaviour
     public void SetWonPanel()
     {
         endGameTitle.text = "You Won!";
-        endGameParagraph.text = "Won paragraph";
+        endGameParagraph.text = "You won the game by defeating the enemy tribe and preserving the island's ressources!";
     }
 
     public void SetLostPanel()
     {
         endGameTitle.text = "You Lose!";
-        endGameParagraph.text = "Lost paragraph";
+        endGameParagraph.text = "The enemy tribe defeated you!";
     }
 
     public void SetLostPanelByRessource()
     {
-        endGameTitle.text = "You lost because of ressource rarefaction!";
-        endGameParagraph.text = "Lost ressource paragraph";
+        endGameTitle.text = "You Lose!";
+        endGameParagraph.text = "You couldn't preserve the island's ressources!";
     }
 }
