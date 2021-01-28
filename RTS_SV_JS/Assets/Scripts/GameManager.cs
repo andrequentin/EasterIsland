@@ -2,11 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using CotcSdk;
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager _instance;
     private GameObject endGamePanel;
     private bool endGamePanelDetected = false;
+
+    //Cloud implementation for technical assignement at XtraLife
+    [SerializeField]
+    private GameObject CotcSdk;
+    private CotcGameObject cb;
+    public Cloud Cloud;
+    public Gamer LoggedGamer;
 
     [SerializeField]
     GameObject dropPoint;
@@ -32,6 +41,7 @@ public class GameManager : MonoBehaviour
         if (_instance == null)
         {
             DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(CotcSdk);
             _instance = this;
         }
         else if (_instance != this)
@@ -43,12 +53,20 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        cb = CotcSdk.GetComponent<CotcGameObject>();
+        cb.GetCloud().Done(cloud => { Cloud = cloud; });
 
         
     }
     
-    // Update is called once per frame
-    void Update()
+  
+
+
+
+
+
+        // Update is called once per frame
+        void Update()
     {
         if(SceneManager.GetActiveScene().buildIndex == 1 && !endGamePanelDetected)
         {
