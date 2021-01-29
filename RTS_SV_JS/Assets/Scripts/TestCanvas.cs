@@ -11,6 +11,7 @@ public class TestCanvas : MonoBehaviour
     public TextMeshProUGUI animalQuantity;
     public TextMeshProUGUI vegetalQuantity;
     public TextMeshProUGUI populationQuantity;
+    public TextMeshProUGUI score;
     public GameObject buildMenuPanel;
     public GameObject upgradeMenuPanel;
     public GameObject ForestMenuPanel;
@@ -33,6 +34,7 @@ public class TestCanvas : MonoBehaviour
         animalQuantity.text = ressourceManager.GetAnimal().ToString() + "/" + ressourceManager.GetMaxAnimal().ToString();
         vegetalQuantity.text = ressourceManager.GetVegetal().ToString() + "/" + ressourceManager.GetMaxVegetal().ToString();
         populationQuantity.text = GameManager._instance.currentPopulation.ToString() + "/" + GameManager._instance.maxPopulation.ToString();
+        score.text = GameManager._instance.GetDropPoint().GetComponent<DropPoint>().score.ToString();
     }
 
     public void ToggleBuildPanel()

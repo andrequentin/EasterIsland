@@ -250,8 +250,8 @@ public class InputManager : MonoBehaviour
     {
         Vector2 origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(origin, -Vector2.up);
-        Debug.Log(origin);
-        Debug.Log(hit.collider.gameObject);
+        //Debug.Log(origin);
+        //Debug.Log(hit.collider.gameObject);
         if(hit.collider != null && !hit.collider.CompareTag(GROUND_TAG) && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == BUILDABLE_TAG || hit.transform.tag == ENEMYBUILDING_TAG || hit.transform.tag == DROPPOINT_TAG || hit.transform.tag == ENEMYNEXUS_TAG || hit.transform.tag == ENEMY_TAG || hit.transform.tag == PREY_TAG))
         {
             //selectedObject.SendMessage("SetTarget", hit.transform);

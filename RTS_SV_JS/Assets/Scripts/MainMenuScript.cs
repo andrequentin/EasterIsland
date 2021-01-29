@@ -31,82 +31,60 @@ public class MainMenuScript : MonoBehaviour
     GameObject LogText;
     [SerializeField]
     GameObject LogoutButton;
+    [SerializeField]
+    TMP_Text scoreboardParagraph;
     public AudioMixer audioMixer;
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
+    private bool isscorebset = false;
     // Update is called once per frame
     void Update()
     {
-        
+        if (!isscorebset && GetNetwork().LoggedGamer != null)
+        {
+            GetNetwork().SetUpScoreboard(scoreboardParagraph);
+            isscorebset = true;
+        }
     }
 
+    private NetworkBehavior GetNetwork() { return GameManager._instance.GetComponent<NetworkBehavior>(); }
+
+
+
     //LoginButton Action - Xtralife
+
+
     public void Login()
     {
-        string idGamer = idText.text;
-        string idPass = passwordText.text;
+        Debug.Log("Trying to log in with (ID = " + idText.text + ", PW = "+ passwordText.text + " )");
 
-        Debug.Log("Trying to log in with (ID = " + idGamer + ", PW = "+ idPass+ " )");
-        GameManager._instance.Cloud.Login(
-           network: "email",
-           networkId: idGamer,
-           networkSecret: idPass)
-               .Done(gamer => {
-                   GameManager._instance.LoggedGamer = gamer;
-                   Debug.Log("Signed in succeeded (ID = " + gamer.GamerId + ")");
-                   Debug.Log("Login data: " + gamer);
-                   Debug.Log("Server time: " + gamer["servertime"]);
-                   LoginEntryID.SetActive(false);
-                   LoginEntryPW.SetActive(false);
-                   LoginButton.SetActive(false);
-                   LogoutButton.SetActive(true);
-                   LogText.SetActive(true);
-                   Logedtext.GetComponent<TextMeshProUGUI>().text = GameManager._instance.LoggedGamer.NetworkId;
-
-               }, ex => {
-                   GameManager._instance.Cloud.LoginAnonymously()
-                       .Catch(ex2 => {
-                           Debug.LogError("Login failed: " + ex2.ToString());
-                       }).Done(gamer => {
-                           GameManager._instance.LoggedGamer = gamer;
-                           Debug.Log("Login failed, Signed anonymously successfully (ID = " + gamer.GamerId + ")");
-                           LoginEntryID.SetActive(false);
-                           LoginEntryPW.SetActive(false);
-                           LoginButton.SetActive(false);
-                           LogoutButton.SetActive(true);
-                           LogText.SetActive(true);
-                           Logedtext.GetComponent<TextMeshProUGUI>().text = GameManager._instance.LoggedGamer.GamerId;
-
-                       });
-
-               });
-
-        
-
+        GetNetwork().Login(idText.text, passwordText.text,this);
+    }
+    public void LogedIn(string id)
+    {
+        LoginEntryID.SetActive(false);
+        LoginEntryPW.SetActive(false);
+        LoginButton.SetActive(false);
+        LogoutButton.SetActive(true);
+        LogText.SetActive(true);
+        Logedtext.GetComponent<TextMeshProUGUI>().text = id;
     }
     public void Logout()
     {
-        GameManager._instance.Cloud.Logout(GameManager._instance.LoggedGamer).Done(result =>
-        {
-            Debug.Log("Logout succeeded");
-            LoginEntryID.SetActive(true);
-            LoginEntryPW.SetActive(true);
-            LoginButton.SetActive(true);
-            LogoutButton.SetActive(false);
-            LogText.SetActive(false);
-        }, ex =>
-        {
-            // The exception should always be CotcException
-            CotcException error = (CotcException)ex;
-            Debug.LogError("Failed to logout: " + error.ErrorCode + " (" + error.HttpStatusCode + ")");
-        });
-       
-    }
+        GetNetwork().Logout(this);
 
+    }
+    public void LogedOut()
+    {
+        LoginEntryID.SetActive(true);
+        LoginEntryPW.SetActive(true);
+        LoginButton.SetActive(true);
+        LogoutButton.SetActive(false);
+        LogText.SetActive(false);
+    }
     public void StartGameButton()
     {
         //SceneManager.LoadScene(1);

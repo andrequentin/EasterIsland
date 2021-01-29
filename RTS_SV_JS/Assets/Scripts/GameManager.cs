@@ -10,15 +10,11 @@ public class GameManager : MonoBehaviour
     private GameObject endGamePanel;
     private bool endGamePanelDetected = false;
 
-    //Cloud implementation for technical assignement at XtraLife
-    [SerializeField]
-    private GameObject CotcSdk;
-    private CotcGameObject cb;
-    public Cloud Cloud;
-    public Gamer LoggedGamer;
+   
 
     [SerializeField]
     GameObject dropPoint;
+    
     public int wood;
     public int animal;
     public int vegetal;
@@ -41,7 +37,7 @@ public class GameManager : MonoBehaviour
         if (_instance == null)
         {
             DontDestroyOnLoad(gameObject);
-            DontDestroyOnLoad(CotcSdk);
+            DontDestroyOnLoad(GetComponent<NetworkBehavior>().CotcSdk);
             _instance = this;
         }
         else if (_instance != this)
@@ -53,18 +49,23 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cb = CotcSdk.GetComponent<CotcGameObject>();
-        cb.GetCloud().Done(cloud => { Cloud = cloud; });
-
+        if (!PlayerPrefs.HasKey("GamerId")||!PlayerPrefs.HasKey("GamerSecret"))
+        {
+            GetComponent<NetworkBehavior>().LoginAnonymously();
+        }
+        else
+        {
+            GetComponent<NetworkBehavior>().LoginAnonymously(PlayerPrefs.GetString("GamerId"), PlayerPrefs.GetString("GamerSecret"));
+        }
         
     }
-    
-  
 
 
 
 
 
+
+    bool scorepost = false;
         // Update is called once per frame
         void Update()
     {
@@ -88,14 +89,27 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 0;
             endGamePanel.SetActive(true);
             endGamePanel.SendMessage("SetWonPanel");
+
+            if (!scorepost)
+            {
+                dropPoint.GetComponent<DropPoint>().addScore(4200);
+
+                GetComponent<NetworkBehavior>().PostScore(dropPoint.GetComponent<DropPoint>().score);
+                scorepost = true;
+            }
+
         }
-        if(lostGame)
+        if (lostGame)
         {
             //wonGame = false;
-            Debug.Log("GOGOGO");
             Time.timeScale = 0;
             endGamePanel.SetActive(true);
             endGamePanel.SendMessage("SetLostPanel");
+            if (!scorepost)
+            {
+                GetComponent<NetworkBehavior>().PostScore(dropPoint.GetComponent<DropPoint>().score);
+                scorepost = true;
+            }
         }
 
         forestCount = GameObject.FindGameObjectsWithTag("Ressource").Length;
@@ -111,6 +125,11 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0;
                 endGamePanel.SetActive(true);
                 endGamePanel.SendMessage("SetLostPanelByRessource");
+                if (!scorepost)
+                {
+                    GetComponent<NetworkBehavior>().PostScore(dropPoint.GetComponent<DropPoint>().score);
+                    scorepost = true;
+                }
             }
         }
     }

@@ -18,7 +18,9 @@ public class DropPoint : MonoBehaviour
     private int totalCapacity;
 
     private bool isFull = false;
-    
+
+    public int score = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,10 +50,18 @@ public class DropPoint : MonoBehaviour
 
     public void SetRessource(int[] ressources)
     {
+     
         this.woodQuantity += ressources[0];
         this.animalQuantity += ressources[1];
         this.vegetalQuantity += ressources[2];
+        addScore( ressources[0] + ressources[1] + ressources[2]); 
+        
         CheckCapacity();
+
+    }
+    public void addScore(int toAdd)
+    {
+        score += toAdd;
     }
 
     public bool IsFull()

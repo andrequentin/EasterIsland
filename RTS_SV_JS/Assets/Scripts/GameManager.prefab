@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 227277952662199595}
   - component: {fileID: 227277952662199594}
   - component: {fileID: 227277952662199592}
+  - component: {fileID: 4950300008769044070}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameManager
@@ -70,3 +71,20 @@ MonoBehaviour:
   wonGame: 0
   lostGame: 0
   lostGameByRessource: 0
+  ressourceThreshold: 0
+  woodRegen: 0
+  vegetalRegen: 0
+  birdReprRate: 0
+--- !u!114 &4950300008769044070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227277952662199605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c593b9f07a0a4564cb34f89618db8869, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CotcSdk: {fileID: 0}

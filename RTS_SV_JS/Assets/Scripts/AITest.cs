@@ -224,7 +224,7 @@ public class AITest : MonoBehaviour
         int totalCarry = ressourcesQuantity[0] + ressourcesQuantity[1] + ressourcesQuantity[2];
         if(!target.GetComponent<DropPoint>().IsFull() && (target.GetComponent<DropPoint>().GetTotalCapacity() + totalCarry) < target.GetComponent<DropPoint>().GetMaxCapacity())
         {
-            Debug.Log(this.ressourcesQuantity);
+            //Debug.Log(this.ressourcesQuantity);
             target.SendMessage("SetRessource", this.ressourcesQuantity);
             ressourcesQuantity[0] = 0;
             ressourcesQuantity[1] = 0;
@@ -297,7 +297,7 @@ public class AITest : MonoBehaviour
             reachedEndOfPath = false;
             atDestination = false;
             canMove = true;
-            Debug.Log("Target gone far");
+            //Debug.Log("Target gone far");
             CancelInvoke("UpdatePath");
             InvokeRepeating("UpdatePath", 0f, 0.5f);
         }
@@ -343,7 +343,7 @@ public class AITest : MonoBehaviour
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb2d.position).normalized;
         //Vector2 force = direction * unitInfo.speed * Time.deltaTime;
         Vector2 force = direction * unitInfo.speed * Time.deltaTime;
-        Debug.Log(force);
+        //Debug.Log(force);
         //rb2d.AddForce(force);
         rb2d.velocity = force;
 

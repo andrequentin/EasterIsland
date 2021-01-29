@@ -15,7 +15,7 @@ public class ForestMenu : MonoBehaviour
     // Start is called before the first frame update
     public void setRessourceWood()
     {
-        Debug.Log("wud");
+        //Debug.Log("wud");
         foreach (GameObject u in im.selectedObjects)
         {
             if (u.GetComponent<AITest>().unitInfo.unitType == UnitTypes.NORMAL)
@@ -26,7 +26,7 @@ public class ForestMenu : MonoBehaviour
     }
     public void setRessourceVegetal()
     {
-        Debug.Log("vegetal");
+        //Debug.Log("vegetal");
         foreach (GameObject u in im.selectedObjects)
         {
             if (u.GetComponent<AITest>().unitInfo.unitType == UnitTypes.NORMAL)

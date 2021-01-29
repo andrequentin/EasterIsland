@@ -37,26 +37,26 @@ public class BuildMenu : MonoBehaviour
     {
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPut", houseFoundation);
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPutCost", houseCost);
-        Debug.Log("Build House");
+        //Debug.Log("Build House");
     }
     public void BuildForest()
     {
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPut", forestFoundation);
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPutCost", forestCost);
-        Debug.Log("Build forest");
+        //Debug.Log("Build forest");
     }
     public void BuildSawMill()
     {
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPut", sawMillFoundation);
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPutCost", sawMillCost);
-        Debug.Log("Build Sawmill");
+        //Debug.Log("Build Sawmill");
     }
 
     public void BuildGranary()
     {
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPut", granaryFoundation);
         GameObject.FindGameObjectWithTag(GAMEMANAGER_TAG).SendMessage("SetBuildingToPutCost", granaryCost);
-        Debug.Log("Build Granary");
+        //Debug.Log("Build Granary");
     }
 
     public void BuildCitizen()
@@ -66,7 +66,7 @@ public class BuildMenu : MonoBehaviour
             Instantiate(citizenPrefab, citizenSpawnPosition, Quaternion.identity);
             GameManager._instance.GetDropPoint().GetComponent<DropPoint>().DecrementAnimal(citizenCost);
             GameManager._instance.IncreaseCurrentPopulation();
-            Debug.Log("Create Citizen");
+            //Debug.Log("Create Citizen");
         }
         else
         {

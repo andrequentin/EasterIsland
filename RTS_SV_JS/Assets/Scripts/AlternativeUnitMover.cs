@@ -199,7 +199,7 @@ public class AlternativeUnitMover : MonoBehaviour
         int totalCarry = ressourcesQuantity[0] + ressourcesQuantity[1] + ressourcesQuantity[2];
         if (!target.GetComponent<DropPoint>().IsFull() && (target.GetComponent<DropPoint>().GetTotalCapacity() + totalCarry) < target.GetComponent<DropPoint>().GetMaxCapacity())
         {
-            Debug.Log(this.ressourcesQuantity);
+            //Debug.Log(this.ressourcesQuantity);
             target.SendMessage("SetRessource", this.ressourcesQuantity);
             ressourcesQuantity[0] = 0;
             ressourcesQuantity[1] = 0;
@@ -233,7 +233,7 @@ public class AlternativeUnitMover : MonoBehaviour
             reachedEndOfPath = false;
             atDestination = false;
             canMove = true;
-            Debug.Log("Target gone far");
+            //Debug.Log("Target gone far");
             InvokeRepeating("UpdatePath", 0f, 0.5f);
         }
     }

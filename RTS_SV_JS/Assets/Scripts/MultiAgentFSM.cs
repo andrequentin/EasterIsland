@@ -634,7 +634,7 @@ public class MultiAgentFSM : MonoBehaviour
             reachedEndOfPath = false;
             atDestination = false;
             canMove = true;
-            Debug.Log("Target gone far");
+            //Debug.Log("Target gone far");
             currentState = States.MOVING;
             CancelInvoke("UpdatePath");
             InvokeRepeating("UpdatePath", 0f, 0.5f);
@@ -718,7 +718,7 @@ public class MultiAgentFSM : MonoBehaviour
         else if(agents.Count <= 0 && !target.CompareTag("EnemyDropPoint"))
         {
             //GO TO BASE
-            Debug.Log("awahwah");
+            //Debug.Log("awahwah");
             SetTarget(GameObject.FindGameObjectWithTag("EnemyDropPoint").transform);
             
         }
