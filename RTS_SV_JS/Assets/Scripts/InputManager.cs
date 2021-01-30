@@ -255,7 +255,7 @@ public class InputManager : MonoBehaviour
         if(hit.collider != null && !hit.collider.CompareTag(GROUND_TAG) && (hit.transform.tag == RESSOURCE_TAG || hit.transform.tag == BUILDABLE_TAG || hit.transform.tag == ENEMYBUILDING_TAG || hit.transform.tag == DROPPOINT_TAG || hit.transform.tag == ENEMYNEXUS_TAG || hit.transform.tag == ENEMY_TAG || hit.transform.tag == PREY_TAG))
         {
             //selectedObject.SendMessage("SetTarget", hit.transform);
-            if(hit.transform.tag == RESSOURCE_TAG )
+            if(hit.transform.tag == RESSOURCE_TAG && selectedObjects.Count > 0)
             {
                 GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleForestPanel");
                 forestSelected = true;

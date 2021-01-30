@@ -16,9 +16,9 @@ public class MainMenuScript : MonoBehaviour
 
     //Login parameter - Xtralife
     [SerializeField]
-    TMP_Text idText;
+    TMP_InputField idText;
     [SerializeField]
-    TMP_Text passwordText;
+    TMP_InputField passwordText;
     [SerializeField]
     TMP_Text Logedtext;
     [SerializeField]
@@ -33,20 +33,22 @@ public class MainMenuScript : MonoBehaviour
     GameObject LogoutButton;
     [SerializeField]
     TMP_Text scoreboardParagraph;
+    [SerializeField]
+    public TMP_Text achievementParagraph;
     public AudioMixer audioMixer;
     // Start is called before the first frame update
     void Start()
     {
     }
 
-    private bool isscorebset = false;
+    private bool isScoreAndAchievementSet = false;
     // Update is called once per frame
     void Update()
     {
-        if (!isscorebset && GetNetwork().LoggedGamer != null)
+        if (!isScoreAndAchievementSet && GetNetwork().LoggedGamer != null)
         {
             GetNetwork().SetUpScoreboard(scoreboardParagraph);
-            isscorebset = true;
+            isScoreAndAchievementSet = true;
         }
     }
 
@@ -61,7 +63,7 @@ public class MainMenuScript : MonoBehaviour
     {
         Debug.Log("Trying to log in with (ID = " + idText.text + ", PW = "+ passwordText.text + " )");
 
-        GetNetwork().Login(idText.text, passwordText.text,this);
+        GetNetwork().LoginWithMailOrConvert(idText.text, passwordText.text);
     }
     public void LogedIn(string id)
     {
@@ -74,7 +76,7 @@ public class MainMenuScript : MonoBehaviour
     }
     public void Logout()
     {
-        GetNetwork().Logout(this);
+        GetNetwork().Logout();
 
     }
     public void LogedOut()
@@ -88,11 +90,16 @@ public class MainMenuScript : MonoBehaviour
     public void StartGameButton()
     {
         //SceneManager.LoadScene(1);
+
         paramPanel.SetActive(true);
     }
 
     public void LaunchGameButton()
     {
+        if(GameManager._instance.GetComponent<NetworkBehavior>().LoggedGamer == null)
+        {
+            GameManager._instance.GetComponent<NetworkBehavior>().LoginAnonymously();
+        }
         SceneManager.LoadScene(1);
     }
 

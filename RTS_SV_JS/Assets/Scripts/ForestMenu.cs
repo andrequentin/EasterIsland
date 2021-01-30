@@ -23,6 +23,7 @@ public class ForestMenu : MonoBehaviour
                 u.GetComponent<AITest>().lookingFor = RessourceTypes.WOOD;
             }
         }
+        GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleForestPanel");
     }
     public void setRessourceVegetal()
     {
@@ -34,6 +35,8 @@ public class ForestMenu : MonoBehaviour
                 u.GetComponent<AITest>().lookingFor = RessourceTypes.VEGETAL;
             }
         }
+        GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleForestPanel");
+
     }
-    
+
 }

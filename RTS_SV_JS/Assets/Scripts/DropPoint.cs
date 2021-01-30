@@ -54,8 +54,19 @@ public class DropPoint : MonoBehaviour
         this.woodQuantity += ressources[0];
         this.animalQuantity += ressources[1];
         this.vegetalQuantity += ressources[2];
-        addScore( ressources[0] + ressources[1] + ressources[2]); 
-        
+        if (!this.GetComponent<BuildingHealth>().isEnemy)
+        {
+
+            if (ressources[0] > 0)
+            {
+                GameManager._instance.GetComponent<NetworkBehavior>().postAchievementProgression("wood", ressources[0]);
+            }
+            if (ressources[1] > 0)
+            {
+                GameManager._instance.GetComponent<NetworkBehavior>().postAchievementProgression("meat", ressources[1]);
+            }
+            addScore(ressources[0] + ressources[1] + ressources[2]);
+        }
         CheckCapacity();
 
     }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class BuildingHealth : MonoBehaviour
 {
     [SerializeField]
-    private bool isEnemy;
+    public bool isEnemy;
 
     [SerializeField]
     private int maxHealth;

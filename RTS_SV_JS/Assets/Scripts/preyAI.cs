@@ -109,7 +109,7 @@ public class preyAI : MonoBehaviour
             mateTimer -= Time.deltaTime;
             if (isAdult && isMale && lookingformate && mated <= 10 && mateTimer <= 0)
             {
-                if (!hasMate || !mate.GetComponent<preyAI>().alive)
+                if (!hasMate || mate==null || !mate.GetComponent<preyAI>().alive)
                 {
                     GameObject[] possibleMates = GameObject.FindGameObjectsWithTag("Prey");
                     float minDIst = Mathf.Infinity;
@@ -209,8 +209,11 @@ public class preyAI : MonoBehaviour
         {
             if (this.mate != null)
             {
+                
                 this.mate.GetComponent<preyAI>().hasMate = false;
                 this.mate.GetComponent<preyAI>().mate = null;
+                hasMate = false;
+                mate = null;
             }
             Destroy(this.gameObject);
         }

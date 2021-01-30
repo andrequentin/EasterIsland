@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using CotcSdk;
 using UnityEngine;
-using CotcSdk;
 
 public class NetworkBehavior : MonoBehaviour
 {
@@ -12,7 +10,8 @@ public class NetworkBehavior : MonoBehaviour
     private CotcGameObject cb;
     public Cloud Cloud;
     public Gamer LoggedGamer;
-
+    [SerializeField]
+    private MainMenuScript mms;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +22,22 @@ public class NetworkBehavior : MonoBehaviour
 
 
     }
+
+
+
+    public void postAchievementProgression(string unit, int toAdd)
+    {
+        
+        LoggedGamer.Transactions.Post(Bundle.CreateObject(unit, +toAdd))
+            .Done(txResult => {
+                foreach(var achievement in txResult.TriggeredAchievements)
+                {
+                    MessageDisplayer._instance.DisplayMessage(achievement.Key);
+
+                }
+            });
+    }
+
     public void PostScore(int score)
     {
         LoggedGamer.Scores.Domain("private").Post(score, "EasterIslandScoreboard", ScoreOrder.HighToLow,
@@ -51,7 +66,23 @@ public class NetworkBehavior : MonoBehaviour
             Debug.LogError("Could not get best high scores: " + error.ErrorCode + " (" + error.ErrorInformation + ")");
         });
     }
+    public void SetUpAchievements(TMPro.TMP_Text achievementPanel)
+    {
+        achievementPanel.text = "";
+        LoggedGamer.Achievements.List().Done(achievements => {
+            foreach (var pair in achievements)
+            {
+                string achName = pair.Key;
+                AchievementDefinition ach = pair.Value;
 
+                if (pair.Value.Progress >= 1)
+                {
+                    achievementPanel.text += pair.Key + '\n';
+                }
+
+            }
+});
+    }
     public void LoginAnonymously()
     {
         Cloud.LoginAnonymously()
@@ -62,9 +93,10 @@ public class NetworkBehavior : MonoBehaviour
                            PlayerPrefs.SetString("GamerId", LoggedGamer.GamerId);
                            PlayerPrefs.SetString("GamerSecret", LoggedGamer.GamerSecret);
                            Debug.Log(" Signed anonymously successfully (ID = " + gamer.GamerId + ")");
+                           SetUpAchievements(mms.achievementParagraph);
                        });
     }
-    public void LoginAnonymously(string idGamer, string secretGamer)
+    public void LoginAnonymouslyWithPlayerPref(string idGamer, string secretGamer)
     {
         Cloud.Login(
             network: "anonymous",
@@ -74,32 +106,43 @@ public class NetworkBehavior : MonoBehaviour
                            Debug.LogError("Login failed: " + ex2.ToString());
                        }).Done(gamer => {
                            LoggedGamer = gamer;
-                           Debug.Log(" Signed anonymously successfully (ID = " + gamer.GamerId + ")");
+                           Debug.Log(" Signed anonymously successfully (gamer = " + gamer.ToString() + ")");
+                           if (LoggedGamer.Network=="email")
+                           {
+                               mms.LogedIn(LoggedGamer.NetworkId);
+                           }
+                           SetUpAchievements(mms.achievementParagraph);
                        });
     }
-    public void Login(string idGamer, string idPass,MainMenuScript mms)
+    public void LoginWithMailOrConvert(string idGamer, string idPass)
     {
-        LoggedGamer.Account.Convert(
-           network: "email",
-           networkId: idGamer,
-           networkSecret: idPass)
-               .Done(     convertRes => {
-                   Debug.Log("Convert succeeded: " + convertRes.ToString());
-                   mms.LogedIn(LoggedGamer.NetworkId);
-                   Debug.Log("Signed in succeeded (ID = " + LoggedGamer.GamerId + ")");
-                   Debug.Log("Login data: " + LoggedGamer);
-                   Debug.Log("Server time: " + LoggedGamer["servertime"]);
-               }, ex => {
-                   Debug.LogError("Login failed: " + ex.ToString());
-               });
+        //The user is always loged in anonymously on start, so if he login it's either a new account so we convert to an account
+
+        //or if the account is already created we just login
+                   Cloud.Login(
+                    network: "email",
+                    networkId: idGamer,
+                    networkSecret: idPass)
+                      .Done(gamer => {
+                          LoggedGamer = gamer;
+                          mms.LogedIn(LoggedGamer.NetworkId);
+                          PlayerPrefs.SetString("GamerId", LoggedGamer.GamerId);
+                          PlayerPrefs.SetString("GamerSecret", LoggedGamer.GamerSecret);
+                          SetUpAchievements(mms.achievementParagraph);
+
+                      }, ex2 => {
+                          Debug.LogError("Login failed: " + ex2.ToString());
+                      });
     }
-    public void Logout(MainMenuScript mms)
+    public void Logout()
     {
         Cloud.Logout(LoggedGamer).Done(result =>
         {
             Debug.Log("Logout succeeded");
             mms.LogedOut();
-
+            PlayerPrefs.DeleteKey("GamerId");
+            PlayerPrefs.DeleteKey("GamerSecret");
+            LoggedGamer = null; 
         }, ex =>
         {
             // The exception should always be CotcException

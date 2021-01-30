@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     private GameObject endGamePanel;
     private bool endGamePanelDetected = false;
 
+    
    
 
     [SerializeField]
@@ -55,8 +56,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            GetComponent<NetworkBehavior>().LoginAnonymously(PlayerPrefs.GetString("GamerId"), PlayerPrefs.GetString("GamerSecret"));
+            GetComponent<NetworkBehavior>().LoginAnonymouslyWithPlayerPref(PlayerPrefs.GetString("GamerId"), PlayerPrefs.GetString("GamerSecret"));
         }
+        
         
     }
 
@@ -96,6 +98,8 @@ public class GameManager : MonoBehaviour
 
                 GetComponent<NetworkBehavior>().PostScore(dropPoint.GetComponent<DropPoint>().score);
                 scorepost = true;
+                GameManager._instance.GetComponent<NetworkBehavior>().postAchievementProgression("win", +1);
+
             }
 
         }
