@@ -24,6 +24,7 @@ public class ForestMenu : MonoBehaviour
             }
         }
         GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleForestPanel");
+        im.forestSelected = false;
     }
     public void setRessourceVegetal()
     {
@@ -36,6 +37,8 @@ public class ForestMenu : MonoBehaviour
             }
         }
         GameObject.FindGameObjectWithTag("UI").SendMessage("ToggleForestPanel");
+        im.forestSelected = false;
+
 
     }
 

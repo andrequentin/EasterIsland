@@ -29,7 +29,7 @@ public class InputManager : MonoBehaviour
     private Texture boxTexture;
     private bool buildSelected = false;
     private bool upgradeSelected = false;
-    private bool forestSelected = false;
+    public bool forestSelected = false;
     GameObject buildingToPut = null;
     bool buildingPending = false;
     int buildingCost;
@@ -166,7 +166,7 @@ public class InputManager : MonoBehaviour
             if(selectBox.Contains(unitPosition,true))
             {
                 selectedObjects.Add(u);
-                u.SendMessage("ToggleSelected");
+                u.SendMessage("Select");
             }
         }
 
@@ -201,8 +201,13 @@ public class InputManager : MonoBehaviour
             //selectedObject = hit.collider.gameObject;
             if (!selectedObjects.Contains(hit.collider.gameObject))
             {
-                hit.collider.gameObject.SendMessage("ToggleSelected");
+                hit.collider.gameObject.SendMessage("Select");
                 selectedObjects.Add(hit.collider.gameObject);
+            }
+            else
+            {
+                hit.collider.gameObject.SendMessage("UnSelect");
+                selectedObjects.Remove(hit.collider.gameObject);
             }
             /*if (!hit.collider.gameObject.GetComponent<AITest>().IsSelected())
                 selectedObjects.Add(hit.collider.gameObject);
@@ -223,7 +228,7 @@ public class InputManager : MonoBehaviour
             //selectedObject = null;
             foreach(GameObject u in selectedObjects)
             {
-                u.SendMessage("ToggleSelected");
+                u.SendMessage("UnSelect");
             }
             selectedObjects.Clear();
         }
@@ -232,7 +237,7 @@ public class InputManager : MonoBehaviour
         {
             foreach (GameObject u in selectedObjects)
             {
-                u.SendMessage("ToggleSelected");
+                u.SendMessage("UnSelect");
             }
             selectedObjects.Clear();
             buildSelected = true;

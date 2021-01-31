@@ -465,6 +465,14 @@ public class AITest : MonoBehaviour
     {
         isSelected = !isSelected;
     }
+    public void Select()
+    {
+        isSelected = true;
+    }
+    public void UnSelect()
+    {
+        isSelected = false;
+    }
 
     public Unit GetUnitInfo()
     {
