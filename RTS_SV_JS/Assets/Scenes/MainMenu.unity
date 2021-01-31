@@ -694,6 +694,11 @@ PrefabInstance:
       objectReference: {fileID: 276426823}
     - target: {fileID: 227277952662199595, guid: 89e92b10203af664bb5add948a81ba63,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 227277952662199595, guid: 89e92b10203af664bb5add948a81ba63,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -709,6 +714,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 227277952662199595, guid: 89e92b10203af664bb5add948a81ba63,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 227277952662199595, guid: 89e92b10203af664bb5add948a81ba63,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -721,16 +731,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 227277952662199595, guid: 89e92b10203af664bb5add948a81ba63,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 227277952662199595, guid: 89e92b10203af664bb5add948a81ba63,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 227277952662199595, guid: 89e92b10203af664bb5add948a81ba63,
         type: 3}
@@ -754,14 +754,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4950300008769044070, guid: 89e92b10203af664bb5add948a81ba63,
         type: 3}
-      propertyPath: CotcSdk
-      value: 
-      objectReference: {fileID: 276426823}
-    - target: {fileID: 4950300008769044070, guid: 89e92b10203af664bb5add948a81ba63,
-        type: 3}
       propertyPath: mms
       value: 
       objectReference: {fileID: 76885422}
+    - target: {fileID: 4950300008769044070, guid: 89e92b10203af664bb5add948a81ba63,
+        type: 3}
+      propertyPath: CotcSdk
+      value: 
+      objectReference: {fileID: 276426823}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 89e92b10203af664bb5add948a81ba63, type: 3}
 --- !u!1 &240630933
@@ -1163,6 +1163,10 @@ PrefabInstance:
       value: CotcSdk
       objectReference: {fileID: 0}
     - target: {fileID: 4000010091182504, guid: 7eb10c3f701753b4a9afe7378b09c472, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000010091182504, guid: 7eb10c3f701753b4a9afe7378b09c472, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1175,6 +1179,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4000010091182504, guid: 7eb10c3f701753b4a9afe7378b09c472, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000010091182504, guid: 7eb10c3f701753b4a9afe7378b09c472, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -1185,14 +1193,6 @@ PrefabInstance:
     - target: {fileID: 4000010091182504, guid: 7eb10c3f701753b4a9afe7378b09c472, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000010091182504, guid: 7eb10c3f701753b4a9afe7378b09c472, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000010091182504, guid: 7eb10c3f701753b4a9afe7378b09c472, type: 3}
-      propertyPath: m_RootOrder
-      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4000010091182504, guid: 7eb10c3f701753b4a9afe7378b09c472, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -7837,7 +7837,7 @@ MonoBehaviour:
   m_MinValue: 5
   m_MaxValue: 300
   m_WholeNumbers: 1
-  m_Value: 5
+  m_Value: 150
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:

@@ -41,7 +41,7 @@ public class NetworkBehavior : MonoBehaviour
     public void PostScore(int score)
     {
         LoggedGamer.Scores.Domain("private").Post(score, "EasterIslandScoreboard", ScoreOrder.HighToLow,
-                "context for score", true)
+                "context for score", false)
                 .Done(postScoreRes => {
                     Debug.Log("Post score: " + postScoreRes.ToString());
                 }, ex => {
