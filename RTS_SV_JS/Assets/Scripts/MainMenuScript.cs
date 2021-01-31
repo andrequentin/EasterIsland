@@ -45,6 +45,17 @@ public class MainMenuScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GetNetwork().LoggedGamer == null)
+        {
+            if (!PlayerPrefs.HasKey("GamerId") || !PlayerPrefs.HasKey("GamerSecret"))
+            {
+                GetNetwork().LoginAnonymously();
+            }
+            else
+            {
+                GetNetwork().LoginAnonymouslyWithPlayerPref(PlayerPrefs.GetString("GamerId"), PlayerPrefs.GetString("GamerSecret"));
+            }
+        }
         if (!isScoreAndAchievementSet && GetNetwork().LoggedGamer != null)
         {
             GetNetwork().SetUpScoreboard(scoreboardParagraph);

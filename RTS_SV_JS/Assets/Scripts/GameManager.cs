@@ -50,14 +50,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!PlayerPrefs.HasKey("GamerId")||!PlayerPrefs.HasKey("GamerSecret"))
-        {
-            GetComponent<NetworkBehavior>().LoginAnonymously();
-        }
-        else
-        {
-            GetComponent<NetworkBehavior>().LoginAnonymouslyWithPlayerPref(PlayerPrefs.GetString("GamerId"), PlayerPrefs.GetString("GamerSecret"));
-        }
+        
         
         
     }
