@@ -27,4 +27,13 @@ public class EndGamePanelScript : MonoBehaviour
         endGameTitle.text = "You Lose!";
         endGameParagraph.text = "You couldn't preserve the island's ressources!";
     }
+    
+    public void GoToMainMenu()
+    {
+        Destroy(GameManager._instance.GetComponent<NetworkBehavior>().CotcSdk);
+        Destroy(GameManager._instance.gameObject);
+        Destroy(EasyAI._instance.gameObject);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        Time.timeScale++;
+    }
 }

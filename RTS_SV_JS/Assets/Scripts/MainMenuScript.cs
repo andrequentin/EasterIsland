@@ -42,18 +42,21 @@ public class MainMenuScript : MonoBehaviour
     }
 
     private bool isScoreAndAchievementSet = false;
+    private bool tryingCo = false;
     // Update is called once per frame
     void Update()
     {
-        if (GetNetwork().LoggedGamer == null)
+        if( !tryingCo && GetNetwork().LoggedGamer == null)
         {
             if (!PlayerPrefs.HasKey("GamerId") || !PlayerPrefs.HasKey("GamerSecret"))
             {
                 GetNetwork().LoginAnonymously();
+                tryingCo = true;
             }
             else
             {
                 GetNetwork().LoginAnonymouslyWithPlayerPref(PlayerPrefs.GetString("GamerId"), PlayerPrefs.GetString("GamerSecret"));
+                tryingCo = true;
             }
         }
         if (!isScoreAndAchievementSet && GetNetwork().LoggedGamer != null)

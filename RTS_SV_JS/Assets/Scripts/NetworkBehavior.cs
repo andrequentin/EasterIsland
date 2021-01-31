@@ -70,6 +70,7 @@ public class NetworkBehavior : MonoBehaviour
     {
         achievementPanel.text = "";
         LoggedGamer.Achievements.List().Done(achievements => {
+            Debug.Log("AHAAAAAAA");
             foreach (var pair in achievements)
             {
                 string achName = pair.Key;

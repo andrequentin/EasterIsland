@@ -59,7 +59,6 @@ public class GameManager : MonoBehaviour
 
 
 
-
     bool scorepost = false;
         // Update is called once per frame
         void Update()

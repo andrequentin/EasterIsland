@@ -560,6 +560,10 @@ public class AITest : MonoBehaviour
     private void Die()
     {
         GameManager._instance.currentPopulation--;
+        if (isSelected)
+        {
+            GameManager._instance.GetComponent<InputManager>().selectedObjects.Remove(this.gameObject);
+        }
         Destroy(this.gameObject);
     }
 }
