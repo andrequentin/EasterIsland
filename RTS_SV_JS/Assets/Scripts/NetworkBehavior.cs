@@ -24,7 +24,7 @@ public class NetworkBehavior : MonoBehaviour
     }
 
 
-
+    //Called by the GameManager to register win achievement and by Dropoint when ressources are gathered for Collecting ressources acheivement
     public void postAchievementProgression(string unit, int toAdd)
     {
         
@@ -38,6 +38,7 @@ public class NetworkBehavior : MonoBehaviour
             });
     }
 
+    //Called by the Gamemanager when game end (post score + extra point if win)
     public void PostScore(int score)
     {
         LoggedGamer.Scores.Domain("private").Post(score, "EasterIslandScoreboard", ScoreOrder.HighToLow,
@@ -50,6 +51,7 @@ public class NetworkBehavior : MonoBehaviour
                     Debug.LogError("Could not post score: " + error.ErrorCode + " (" + error.ErrorInformation + ")");
                 });
     }
+    //Called by the MainMenuScript when login/Anonymous login is done
     public void SetUpScoreboard(TMPro.TMP_Text scoreboard)
     {
         scoreboard.text = "";
@@ -66,11 +68,11 @@ public class NetworkBehavior : MonoBehaviour
             Debug.LogError("Could not get best high scores: " + error.ErrorCode + " (" + error.ErrorInformation + ")");
         });
     }
+    //Called by Logins functions (LoginAnonymously, LoginAnonymouslyWithPlayerPref,LoginWithMailOrConvert)
     public void SetUpAchievements(TMPro.TMP_Text achievementPanel)
     {
         achievementPanel.text = "";
         LoggedGamer.Achievements.List().Done(achievements => {
-            Debug.Log("AHAAAAAAA");
             foreach (var pair in achievements)
             {
                 string achName = pair.Key;
@@ -84,6 +86,7 @@ public class NetworkBehavior : MonoBehaviour
             }
 });
     }
+    //Called by MainMenuScript to ensure we are always "logged" (even after a logout) for Scoreboard display
     public void LoginAnonymously()
     {
         Cloud.LoginAnonymously()
@@ -97,6 +100,9 @@ public class NetworkBehavior : MonoBehaviour
                            SetUpAchievements(mms.achievementParagraph);
                        });
     }
+
+
+    //Called by MainMenuScript to log with saved PlayerPref
     public void LoginAnonymouslyWithPlayerPref(string idGamer, string secretGamer)
     {
         Cloud.Login(
@@ -115,6 +121,10 @@ public class NetworkBehavior : MonoBehaviour
                            SetUpAchievements(mms.achievementParagraph);
                        });
     }
+
+
+
+    //Called by MainMenuScript when login button is used
     public void LoginWithMailOrConvert(string idGamer, string idPass)
     {
         //The user is always loged in anonymously on start, so if he login it's either a new account so we convert to an account
@@ -135,6 +145,9 @@ public class NetworkBehavior : MonoBehaviour
                           Debug.LogError("Login failed: " + ex2.ToString());
                       });
     }
+
+
+    //Called by MainMenuScript when logout button is used
     public void Logout()
     {
         Cloud.Logout(LoggedGamer).Done(result =>
