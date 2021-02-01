@@ -32,7 +32,10 @@ public class ParamPanelScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        SetRessourceFarm();
+        SetWoodRegen();
+        SetVegetalRegen();
+        SetBirdReprRate();
     }
 
     // Update is called once per frame
@@ -42,6 +45,7 @@ public class ParamPanelScript : MonoBehaviour
         woodText.text = woodSlider.value.ToString();
         vegetalText.text = vegetalSlider.value.ToString();
         birdText.text = birdSlider.value.ToString();
+
     }
 
     public void SetRessourceFarm()

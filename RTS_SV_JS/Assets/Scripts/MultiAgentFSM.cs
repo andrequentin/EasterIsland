@@ -550,6 +550,10 @@ public class MultiAgentFSM : MonoBehaviour
             }
 
         }
+        if (this.target == null)
+        {
+            this.currentState = States.IDLE;
+        }
     }
 
     private void GatherState()
